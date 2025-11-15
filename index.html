@@ -1,0 +1,1285 @@
+import React, { useState, useReducer } from 'react';
+import { 
+  Users, Target, TrendingUp, Calendar, GraduationCap, BarChart3,
+  CheckCircle, AlertTriangle, XCircle, ChevronDown, ChevronUp, UserCheck,
+  Pencil, Trash2, PlusCircle, X as XIcon, FileText, Printer, Star, Info
+} from 'lucide-react';
+
+// DATA AWAL (Initial Data)
+// ... (Data awal karyawan tetap sama, tidak perlu diubah) ...
+const initialData = [
+  {
+    id: 'mahmudah',
+    name: 'Mahmudah Hayati, S.H.',
+    role: 'Kepala Administrasi & Keuangan (Penanggung Jawab Unit Adamart)',
+    photo: 'https://placehold.co/120x120/4f46e5/white?text=MH',
+    competencies: [
+      { name: 'Keuangan & Administrasi', current: 4, target: 5 },
+      { name: 'Manajemen SDM & Hubungan Industrial', current: 4, target: 5 },
+      { name: 'Manajemen Proyek Adamart', current: 4, target: 5 }
+    ],
+    training: ['Pelatihan Manajemen Keuangan Lanjutan', 'Sertifikasi Manajemen SDM & Kepemimpinan', 'Workshop Inovasi Ritel (Adamart)'],
+    kpis: [
+      { name: 'Ketepatan pelaporan keuangan bulanan', target: '100% laporan tepat waktu' },
+      { name: 'Efisiensi anggaran administrasi Adamart', target: 'Pengurangan biaya 5% dibanding tahun sebelumnya' },
+      { name: 'Kepuasan anggota (layanan administrasi)', target: 'Skor ≥ 90%' },
+      { name: 'Kepatuhan regulasi dan audit internal', target: '0 temuan audit' }
+    ],
+    careerPath: {
+      short: ['Pelatihan Leadership & Strategic Planning', 'Manajemen Keuangan tingkat lanjut', 'Mimpin proyek ERP/digitalisasi', 'Mentor bagi staf junior (e.g., Yuliani)'],
+      mid: ['Promosi → Manajer Umum (General Manager)', 'Executive Leadership Program / Magister Manajemen (paruh waktu)', 'Latih kader penerus (Sri/Yuliani)', 'Aktif di forum koperasi regional/nasional'],
+      long: ['Penasihat utama Badan Pengurus', 'Konsolidasi & inovasi unit usaha', 'Mentor formal program onboarding', 'Regenerasi kepemimpinan & transfer knowledge']
+    },
+    annualReview: "",
+    developmentPotential: "",
+    approval: {
+      manager: { approved: false, date: null },
+      head: { approved: false, date: null }
+    }
+  },
+  {
+    id: 'ernest',
+    name: 'Ernest Kalula, S.Pd.',
+    role: 'Kepala Operasional',
+    photo: 'https://placehold.co/120x120/059669/white?text=EK',
+    competencies: [
+      { name: 'Kepemimpinan Operasional & K3LH', current: 4, target: 5 },
+      { name: 'Pengembangan SOP & Audit SMKP', current: 4, target: 5 },
+      { name: 'Komunikasi Tim & Negosiasi', current: 4, target: 5 }
+    ],
+    training: ['Sertifikasi Ahli K3 (AK3 Umum)', 'Pelatihan Kepemimpinan Operasional', 'Workshop Lean Management atau Six Sigma'],
+    kpis: [
+      { name: 'Kepatuhan terhadap standar K3LH', target: 'Hasil audit minimal “Memuaskan”' },
+      { name: 'Jumlah kecelakaan kerja (LTI)', target: '0 kasus LTI' },
+      { name: 'Penyelesaian laporan operasional bulanan', target: '100% laporan selesai tepat waktu' },
+      { name: 'Pengembangan SOP/efisiensi operasional', target: 'Minimal 2 SOP diperbaharui' }
+    ],
+    careerPath: {
+      short: ['Manajemen Operasional Lanjutan / Project Management', 'Manajemen Bisnis Koperasi', 'Sertifikasi Pengawas Operasional Madya', 'Rotasi terbatas (Adamart/Travel)'],
+      mid: ['Promosi → Manajer Operasional / Koordinator Operasi', 'Leadership for Managers / Negotiation Training', 'Pelatih internal SOP & safety', 'Membina budaya K3 & pelayanan prima'],
+      long: ['Wakil Manajer Umum bidang Operasional / GM', 'Implementasi teknologi (tracking armada, booking online)', 'Mentoring manajer muda', 'Perumus strategi ekspansi usaha jasa']
+    },
+    annualReview: "",
+    developmentPotential: "",
+    approval: {
+      manager: { approved: false, date: null },
+      head: { approved: false, date: null }
+    }
+  },
+  {
+    id: 'yuliani',
+    name: 'Yuliani',
+    role: 'Staf Keuangan',
+    photo: 'https://placehold.co/120x120/ec4899/white?text=YU',
+    competencies: [
+      { name: 'Pengelolaan Kas & Laporan Keuangan', current: 3, target: 4 },
+      { name: 'Administrasi Perpajakan & Pelaporan', current: 3, target: 4 },
+      { name: 'Keterampilan MS Office', current: 3, target: 4 }
+    ],
+    training: ['Pelatihan Brevet Pajak A/B', 'Kursus Sistem ERP Keuangan (SAP/Accounting Software)', 'Pelatihan English for Business (Keuangan)'],
+    kpis: [
+      { name: 'Ketepatan laporan keuangan bulanan', target: '100% tepat waktu' },
+      { name: 'Ketepatan pelaporan SPT Masa pajak', target: '100% tepat waktu' },
+      { name: 'Akurasi pembukuan (kesalahan ≤5%)', target: '≤5% kesalahan (temuan audit)' },
+      { name: 'Pengembangan diri (pelatihan keuangan)', target: '≥2 pelatihan keuangan/tahun' }
+    ],
+    careerPath: {
+      short: ['Brevet Pajak A&B', 'Analisis Laporan Keuangan & Budgeting', 'Penyusunan laporan SAK ETAP', 'Koordinator proyek efisiensi (e.g., pembayaran digital)'],
+      mid: ['Promosi → Supervisor/Koordinator Keuangan', 'Leadership Dasar / Supervisory Skills', 'Rotasi ke Unit Simpan Pinjam atau Adamart', 'Mentor staf baru (buddy system)'],
+      long: ['Kepala Keuangan/Administrasi', 'CPMA / Pascasarjana Manajemen Keuangan', 'Partner strategis GM dalam keputusan investasi', 'Mentor utama staf keuangan & pelatihan internal']
+    },
+    annualReview: "",
+    developmentPotential: "",
+    approval: {
+      manager: { approved: false, date: null },
+      head: { approved: false, date: null }
+    }
+  },
+  {
+    id: 'sri',
+    name: 'Sri Mulyani, S.AB.',
+    role: 'Kepala Unit Simpan Pinjam',
+    photo: 'https://placehold.co/120x120/ea580c/white?text=SM',
+    competencies: [
+      { name: 'Pengelolaan Unit Simpan Pinjam', current: 4, target: 5 },
+      { name: 'Penyusunan Laporan Keuangan & Pajak Koperasi', current: 4, target: 5 },
+      { name: 'Kepemimpinan & Manajemen Koperasi', current: 4, target: 5 }
+    ],
+    training: ['Sertifikasi Manajemen Koperasi / Brevet Pajak Lanjutan', 'Pelatihan Kepemimpinan & Strategi Koperasi', 'Workshop Perencanaan Keuangan Koperasi'],
+    kpis: [
+      { name: 'Pertumbuhan total simpanan anggota', target: 'Naik +5% dari tahun sebelumnya' },
+      { name: 'Rasio NPL pada pinjaman', target: 'NPL ≤ 5%' },
+      { name: 'Kepatuhan pelaporan keuangan koperasi (SAK) dan pajak', target: '100% audit SAK-EPAK memuaskan' },
+      { name: 'Pengembangan produk SP atau edukasi anggota', target: '1 produk baru atau 80% anggota ikut edukasi' }
+    ],
+    careerPath: {
+      short: ['Leadership Management untuk manajer unit', 'Workshop Pengembangan Produk Simpan Pinjam digital', 'Mimpin proyek pembiayaan Haji/Umroh', 'Mentor teknis staf akuntansi junior'],
+      mid: ['Promosi → Manajer Keuangan / Kepala Administrasi & Keuangan', 'Sertifikasi Manajemen Risiko Keuangan', 'Mini-MBA / Executive Development', 'Rotasi sementara ke Adamart'],
+      long: ['Jalur Eksekutif: General Manager', 'Jalur Spesialis: CFO / Konsultan Ahli', 'Aktif di asosiasi koperasi nasional', 'Coaching & succession planning']
+    },
+    annualReview: "",
+    developmentPotential: "",
+    approval: {
+      manager: { approved: false, date: null },
+      head: { approved: false, date: null }
+    }
+  },
+  {
+    id: 'zahrah',
+    name: 'Zahrah Annisa, S.E.',
+    role: 'Kepala Unit Kopkarindo Travel',
+    photo: 'https://placehold.co/120x120/7c3aed/white?text=ZA',
+    competencies: [
+      { name: 'Layanan Pelanggan & Komunikasi', current: 2, target: 4 },
+      { name: 'Perencanaan & Operasional Perjalanan (Travel)', current: 2, target: 4 },
+      { name: 'Pemasaran Dasar Pariwisata', current: 2, target: 4 }
+    ],
+    training: ['Kursus Agen Perjalanan & Perhotelan', 'Pelatihan Customer Service & Etika Bisnis', 'Kursus Bahasa Inggris Bisnis untuk Pariwisata'],
+    kpis: [
+      { name: 'Peningkatan omzet unit travel', target: 'Naik +10% dari tahun sebelumnya' },
+      { name: 'Jumlah pelanggan/paket wisata terjual', target: '≥100 pelanggan/tiket penjualan' },
+      { name: 'Tingkat kepuasan pelanggan layanan travel', target: 'Skor ≥ 4,5/5' },
+      { name: 'Pelatihan dan sertifikasi layanan pariwisata', target: '100% pelatihan/sertifikasi terkait' }
+    ],
+    careerPath: {
+      short: ['Manajemen Biro Perjalanan Wisata bersertifikat', 'Customer Service Excellence & Digital Marketing', 'Mentoring dari Mahmudah/Ernest', 'SOP layanan travel & program promosi bundling'],
+      mid: ['Rotasi ke Unit Adamart (6–12 bulan)', 'Promosi → Koordinator Layanan Anggota', 'Manajemen Operasi Ritel & Business Development', 'Pembina magang & tim proyek strategis'],
+      long: ['Manajer Operasional & Pengembangan Usaha', 'Ikut seminar inovasi koperasi & tren pariwisata/ritel', 'Networking mitra (maskapai, supplier)', 'Suksesor GM (Sekretaris Manajemen / Tim Strategi)']
+    },
+    annualReview: "",
+    developmentPotential: "",
+    approval: {
+      manager: { approved: false, date: null },
+      head: { approved: false, date: null }
+    }
+  }
+];
+
+
+const initialState = {
+  employees: initialData.reduce((acc, emp) => {
+    acc[emp.id] = {
+      ...emp,
+      kpis: emp.kpis.map(k => ({ ...k, status: null })), 
+    };
+    return acc;
+  }, {})
+};
+
+// --- REDUCER (Logic tetap sama) ---
+function appReducer(state, action) {
+  const { type, payload } = action;
+  const { empId, kpi, kpiIndex, comp, compIndex, status, newCurrent, notes, role } = payload || {};
+  let currentEmployee;
+  let newKpis;
+  let newCompetencies;
+
+  if (empId) {
+    currentEmployee = state.employees[empId];
+  }
+
+  switch (type) {
+    // --- KPI ACTIONS ---
+    case 'ADD_KPI':
+      newKpis = [...currentEmployee.kpis, { ...kpi, status: null }];
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, kpis: newKpis }
+        }
+      };
+
+    case 'EDIT_KPI':
+      newKpis = currentEmployee.kpis.map((item, index) =>
+        index === kpiIndex ? { ...item, ...kpi } : item
+      );
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, kpis: newKpis }
+        }
+      };
+
+    case 'DELETE_KPI':
+      newKpis = currentEmployee.kpis.filter((_, index) => index !== kpiIndex);
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, kpis: newKpis }
+        }
+      };
+      
+    case 'ASSESS_KPI':
+      newKpis = currentEmployee.kpis.map((item, index) =>
+        index === kpiIndex ? { ...item, status } : item
+      );
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, kpis: newKpis }
+        }
+      };
+
+    // --- COMPETENCY ACTIONS ---
+    case 'ADD_COMPETENCY':
+      newCompetencies = [...currentEmployee.competencies, { ...comp, current: 0 }];
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, competencies: newCompetencies }
+        }
+      };
+
+    case 'EDIT_COMPETENCY':
+      newCompetencies = currentEmployee.competencies.map((item, index) =>
+        index === compIndex ? { ...item, ...comp } : item
+      );
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, competencies: newCompetencies }
+        }
+      };
+
+    case 'DELETE_COMPETENCY':
+      newCompetencies = currentEmployee.competencies.filter((_, index) => index !== compIndex);
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, competencies: newCompetencies }
+        }
+      };
+      
+    case 'ASSESS_COMPETENCY':
+      newCompetencies = currentEmployee.competencies.map((item, index) =>
+        index === compIndex ? { ...item, current: parseInt(newCurrent, 10) } : item
+      );
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, competencies: newCompetencies }
+        }
+      };
+      
+    // --- REPORT ACTIONS ---
+    case 'UPDATE_REPORT_NOTES':
+        return {
+          ...state,
+          employees: {
+            ...state.employees,
+            [empId]: { 
+                ...currentEmployee, 
+                annualReview: notes.annualReview !== undefined ? notes.annualReview : currentEmployee.annualReview,
+                developmentPotential: notes.developmentPotential !== undefined ? notes.developmentPotential : currentEmployee.developmentPotential
+            }
+          }
+        };
+        
+    case 'APPROVE_REPORT':
+      const newApproval = {
+        ...currentEmployee.approval,
+        [role]: { approved: true, date: new Date().toISOString() }
+      };
+      return {
+        ...state,
+        employees: {
+          ...state.employees,
+          [empId]: { ...currentEmployee, approval: newApproval }
+        }
+      };
+
+    default:
+      return state;
+  }
+}
+
+// --- KOMPONEN MODAL (Logic tetap sama) ---
+const Modal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
+        <div className="flex justify-between items-center p-5 border-b">
+          <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <XIcon size={24} />
+          </button>
+        </div>
+        <div className="p-5">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- KOMPONEN FORM KPI (Logic tetap sama) ---
+const KpiForm = ({ onSubmit, initialData = {} }) => {
+  const [name, setName] = useState(initialData.name || '');
+  const [target, setTarget] = useState(initialData.target || '');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ name, target });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Nama KPI</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Target</label>
+        <input
+          type="text"
+          value={target}
+          onChange={(e) => setTarget(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+          required
+        />
+      </div>
+      <button type="submit" className="w-full bg-indigo-600 text-white p-2 rounded-lg font-medium hover:bg-indigo-700">
+        Simpan
+      </button>
+    </form>
+  );
+};
+
+// --- KOMPONEN FORM KOMPETENSI (Logic tetap sama) ---
+const CompetencyForm = ({ onSubmit, initialData = {} }) => {
+  const [name, setName] = useState(initialData.name || '');
+  const [target, setTarget] = useState(initialData.target || 5);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ name, target: parseInt(target, 10) });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Nama Kompetensi</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Target Level (1-5)</label>
+        <input
+          type="number"
+          value={target}
+          onChange={(e) => setTarget(e.target.value)}
+          min="1"
+          max="5"
+          className="w-full p-2 border border-gray-300 rounded-lg"
+          required
+        />
+      </div>
+      <button type="submit" className="w-full bg-indigo-600 text-white p-2 rounded-lg font-medium hover:bg-indigo-700">
+        Simpan
+      </button>
+    </form>
+  );
+};
+
+// --- KOMPONEN LAPORAN TAHUNAN (PRINTABLE) - [DIPERBARUI DENGAN INSIGHT] ---
+const PrintableReport = ({ emp }) => {
+    const kpis = emp.kpis || [];
+    const competencies = emp.competencies || [];
+
+    // --- Insight KPI ---
+    const kpiAchieved = kpis.filter(k => k.status === true).length;
+    const kpiTotal = kpis.length;
+    const kpiPercentage = kpiTotal > 0 ? Math.round((kpiAchieved / kpiTotal) * 100) : 0;
+
+    const kpiStatus = (status) => {
+        if (status === true) return <span className="font-bold text-green-600">Tercapai</span>;
+        if (status === false) return <span className="font-bold text-red-600">Tidak Tercapai</span>;
+        return <span className="text-gray-500">Belum Dinilai</span>;
+    };
+    
+    // --- Komponen Tanda Tangan ---
+    const ApprovalSignature = ({ title, approval }) => (
+      <div className="w-1/2 px-4">
+          <p className="text-sm text-gray-700 mb-2">Disetujui oleh,</p>
+          {approval.approved ? (
+            <div className="text-sm text-green-600 mb-2 min-h-[40px]">
+              <p className="font-bold">Telah disetujui secara digital pada:</p>
+              <p>{new Date(approval.date).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}</p>
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500 italic mb-2 min-h-[40px] pt-4">
+              (Belum disetujui)
+            </div>
+          )}
+          <div className="border-t border-gray-400 pt-2 mt-12">
+              <p className="font-semibold text-gray-800">(_______________________)</p>
+              <p className="text-sm font-medium text-gray-600">{title}</p>
+          </div>
+      </div>
+    );
+    
+    return (
+        <div id="printable-report" className="bg-white p-8 max-w-4xl mx-auto border border-gray-300 rounded-lg shadow-lg">
+            <header className="text-center mb-10 pb-4 border-b-2 border-gray-800">
+                <h1 className="text-3xl font-bold text-gray-900">Laporan Penilaian Kinerja Tahunan</h1>
+                <h2 className="text-xl font-semibold text-gray-700">Koperasi Adaro Karya Mandiri (Kopkar AKM)</h2>
+            </header>
+
+            <section className="mb-8">
+                <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Informasi Karyawan</h3>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <span className="text-sm font-medium text-gray-600">Nama Karyawan</span>
+                        <p className="text-lg font-semibold text-gray-900">{emp.name}</p>
+                    </div>
+                    <div>
+                        <span className="text-sm font-medium text-gray-600">Jabatan</span>
+                        <p className="text-lg font-semibold text-gray-900">{emp.role}</p>
+                    </div>
+                </div>
+            </section>
+
+            <section className="mb-8">
+                <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Ringkasan Penilaian KPI</h3>
+                {/* [BARU] Insight Skor KPI */}
+                <div className="mb-4 p-4 print-kpi-score rounded-lg text-center">
+                  <h4 className="text-lg font-semibold">Skor Pencapaian KPI</h4>
+                  <p className="text-3xl font-bold">{kpiAchieved} <span className="text-xl">/ {kpiTotal}</span></p>
+                  <p className="text-lg font-medium">({kpiPercentage}%)</p>
+                </div>
+                
+                <table className="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr className="bg-gray-100">
+                            <th className="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Nama KPI</th>
+                            <th className="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Target</th>
+                            <th className="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {kpis.map((kpi, index) => (
+                            <tr key={index} className="even:bg-gray-50">
+                                <td className="border border-gray-300 p-2 text-sm text-gray-800">{kpi.name}</td>
+                                <td className="border border-gray-300 p-2 text-sm text-gray-800">{kpi.target}</td>
+                                <td className="border border-gray-300 p-2 text-sm text-gray-800">{kpiStatus(kpi.status)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </section>
+
+            <section className="mb-8">
+                <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Ringkasan Penilaian Kompetensi</h3>
+                <table className="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr className="bg-gray-100">
+                            <th className="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Nama Kompetensi</th>
+                            <th className="border border-gray-300 p-2 text-center text-sm font-semibold text-gray-700">Skor Saat Ini</th>
+                            <th className="border border-gray-300 p-2 text-center text-sm font-semibold text-gray-700">Target Skor</th>
+                            {/* [BARU] Insight Gap Analysis */}
+                            <th className="border border-gray-300 p-2 text-center text-sm font-semibold text-gray-700">Gap</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {competencies.map((comp, index) => {
+                            const gap = comp.target - comp.current;
+                            return (
+                                <tr key={index} className="even:bg-gray-50">
+                                    <td className="border border-gray-300 p-2 text-sm text-gray-800">{comp.name}</td>
+                                    <td className="border border-gray-300 p-2 text-sm text-center font-bold text-indigo-600">{comp.current}</td>
+                                    <td className="border border-gray-300 p-2 text-sm text-center font-bold text-gray-600">{comp.target}</td>
+                                    {/* [BARU] Insight Gap Analysis */}
+                                    <td className={`border border-gray-300 p-2 text-sm text-center font-bold ${gap > 0 ? 'print-table-gap-bad' : 'print-table-gap-good'}`}>
+                                      {gap > 0 ? `-${gap}` : gap}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </section>
+            
+            <section className="mb-8">
+                <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Catatan & Rencana Pengembangan</h3>
+                <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Penjelasan Target Tahunan (Review)</label>
+                    <p className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] text-sm text-gray-800 whitespace-pre-wrap">
+                        {emp.annualReview || "(Belum diisi)"}
+                    </p>
+                </div>
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Potensi Pengembangan Diri</label>
+                    <p className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] text-sm text-gray-800 whitespace-pre-wrap">
+                        {emp.developmentPotential || "(Belum diisi)"}
+                    </p>
+                </div>
+            </section>
+            
+            <section className="mt-20 pt-10">
+                <div className="flex justify-between text-left">
+                    <ApprovalSignature title="Manajer Koperasi" approval={emp.approval.manager} />
+                    <ApprovalSignature title="Ketua Koperasi" approval={emp.approval.head} />
+                </div>
+            </section>
+        </div>
+    );
+};
+
+// --- [BARU] KOMPONEN RINGKASAN KINERJA (WEB VIEW) ---
+const ReportSummaryView = ({ emp }) => {
+  const kpis = emp.kpis || [];
+  const competencies = emp.competencies || [];
+
+  const kpiAchieved = kpis.filter(k => k.status === true).length;
+  const kpiTotal = kpis.length;
+  const kpiPercentage = kpiTotal > 0 ? Math.round((kpiAchieved / kpiTotal) * 100) : 0;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm p-6 no-print">
+      <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Ringkasan Kinerja (Data Tersinkronisasi)</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Ringkasan KPI */}
+        <div>
+          <h4 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <BarChart3 size={18} />
+            Pencapaian KPI
+          </h4>
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
+            <h4 className="text-lg font-semibold text-blue-800">Skor KPI</h4>
+            <p className="text-3xl font-bold text-blue-700">{kpiAchieved} <span className="text-xl">/ {kpiTotal}</span></p>
+            <p className="text-lg font-medium text-blue-700">({kpiPercentage}%)</p>
+          </div>
+        </div>
+        {/* Ringkasan Kompetensi */}
+        <div>
+          <h4 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <Star size={18} />
+            Penilaian Kompetensi
+          </h4>
+          <ul className="space-y-2">
+            {competencies.map((comp, index) => {
+              const gap = comp.target - comp.current;
+              return (
+                <li key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-medium text-gray-700">{comp.name}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-bold text-indigo-600">{comp.current} / {comp.target}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${gap > 0 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                      Gap: {gap > 0 ? `-${gap}` : gap}
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+// --- KOMPONEN KOTAK APPROVAL (INTERAKTIF) ---
+const ApprovalBox = ({ title, approval, onApprove }) => {
+  return (
+    <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+      <h4 className="font-semibold text-gray-700">{title}</h4>
+      {approval.approved ? (
+        <div className="mt-2 text-green-600">
+          <CheckCircle size={18} className="inline mr-2" />
+          <span className="font-bold">Disetujui</span>
+          <p className="text-sm">
+            {new Date(approval.date).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}
+          </p>
+        </div>
+      ) : (
+        <div className="mt-2 text-gray-500">
+          <AlertTriangle size={18} className="inline mr-2" />
+          <span className="font-bold">Menunggu Persetujuan</span>
+          <button
+            onClick={onApprove}
+            className="mt-3 w-full bg-blue-500 text-white p-2 rounded-lg font-medium hover:bg-blue-600 transition-colors"
+          >
+            Setujui sebagai {title}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+// --- KOMPONEN APLIKASI UTAMA ---
+const App = () => {
+  const [state, dispatch] = useReducer(appReducer, initialState);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState('mahmudah');
+  const [expandedPaths, setExpandedPaths] = useState({});
+  const [modal, setModal] = useState({ isOpen: false, type: null, empId: null, data: null });
+
+  const employeesArray = Object.values(state.employees);
+  const selectedEmployee = state.employees[selectedEmployeeId];
+
+  const togglePath = (empId, key) => {
+    setExpandedPaths(prev => ({
+      ...prev,
+      [empId]: { ...prev[empId], [key]: !prev[empId]?.[key] }
+    }));
+  };
+
+  // --- Modal Handlers ---
+  const openModal = (type, empId, data = null, index = null) => {
+    setModal({ isOpen: true, type, empId, data: data ? { ...data, index } : { index } });
+  };
+  const closeModal = () => setModal({ isOpen: false, type: null, empId: null, data: null });
+
+  const handleFormSubmit = (formData) => {
+    const { type, empId, data } = modal;
+    
+    if (type === 'ADD_KPI') {
+      dispatch({ type: 'ADD_KPI', payload: { empId, kpi: formData } });
+    } else if (type === 'EDIT_KPI') {
+      dispatch({ type: 'EDIT_KPI', payload: { empId, kpiIndex: data.index, kpi: formData } });
+    } else if (type === 'ADD_COMPETENCY') {
+      dispatch({ type: 'ADD_COMPETENCY', payload: { empId, comp: formData } });
+    } else if (type === 'EDIT_COMPETENCY') {
+      dispatch({ type: 'EDIT_COMPETENCY', payload: { empId, compIndex: data.index, comp: formData } });
+    }
+    
+    closeModal();
+  };
+
+  // --- Dispatch Handlers ---
+  const handleKpiToggle = (empId, kpiIndex, status) => {
+    dispatch({ type: 'ASSESS_KPI', payload: { empId, kpiIndex, status } });
+  };
+
+  const handleKpiDelete = (empId, kpiIndex) => {
+    if (window.confirm('Anda yakin ingin menghapus KPI ini?')) {
+      dispatch({ type: 'DELETE_KPI', payload: { empId, kpiIndex } });
+    }
+  };
+
+  const handleCompetencyChange = (empId, compIndex, newCurrent) => {
+    dispatch({ type: 'ASSESS_COMPETENCY', payload: { empId, compIndex, newCurrent } });
+  };
+  
+  const handleCompetencyDelete = (empId, compIndex) => {
+    if (window.confirm('Anda yakin ingin menghapus kompetensi ini?')) {
+      dispatch({ type: 'DELETE_COMPETENCY', payload: { empId, compIndex } });
+    }
+  };
+  
+  const handleNotesChange = (empId, field, value) => {
+      dispatch({
+          type: 'UPDATE_REPORT_NOTES',
+          payload: {
+              empId,
+              notes: { [field]: value }
+          }
+      });
+  };
+
+  // --- Status Count ---
+  const getKpiStatusCount = (empId) => {
+    const list = state.employees[empId].kpis;
+    const achieved = list.filter(k => k.status === true).length;
+    const missed = list.filter(k => k.status === false).length;
+    const pending = list.filter(k => k.status === null).length;
+    return { achieved, missed, pending, total: list.length };
+  };
+  
+  // --- Print Handler ---
+  const handlePrint = () => {
+      window.print();
+  };
+
+  // --- KOMPONEN KARTU PROFIL ---
+  const ProfileCard = ({ emp, isActive }) => {
+    const { achieved, total } = getKpiStatusCount(emp.id);
+    return (
+      <div 
+        className={`p-5 rounded-2xl border transition-all duration-300 cursor-pointer hover:shadow-lg ${
+          isActive 
+            ? 'bg-indigo-50 border-indigo-500 ring-2 ring-indigo-200' 
+            : 'bg-white border-gray-200 hover:border-indigo-300'
+        }`}
+        onClick={() => setSelectedEmployeeId(emp.id)}
+      >
+        <div className="flex items-center gap-4">
+          <img 
+            src={emp.photo} 
+            alt={emp.name} 
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <div className="flex-1">
+            <h3 className="font-bold text-gray-900 text-lg">{emp.name}</h3>
+            <p className="text-sm text-gray-600 mt-1">{emp.role}</p>
+            <div className="mt-2 flex items-center gap-2">
+              <div className="flex items-center text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                <CheckCircle size={12} className="mr-1" />
+                {achieved}/{total} KPI
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // --- KOMPONEN BAR KOMPETENSI (INTERAKTIF) ---
+  const CompetencyBar = ({ comp, empId, index }) => {
+    const width = (comp.current / comp.target) * 100;
+    return (
+      <div className="mb-3 p-3 border rounded-lg">
+        <div className="flex justify-between items-center text-sm mb-2">
+          <span className="font-medium text-gray-700">{comp.name}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-500 font-bold">{comp.current}/{comp.target}</span>
+            <button onClick={() => openModal('EDIT_COMPETENCY', empId, comp, index)} className="text-gray-400 hover:text-indigo-600" title="Edit">
+              <Pencil size={14} />
+            </button>
+            <button onClick={() => handleCompetencyDelete(empId, index)} className="text-gray-400 hover:text-red-600" title="Hapus">
+              <Trash2 size={14} />
+            </button>
+          </div>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+          <div 
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full transition-all duration-500"
+            style={{ width: `${width}%` }}
+          />
+        </div>
+        <input
+          type="range"
+          min="0"
+          max={comp.target}
+          value={comp.current}
+          step="1"
+          onChange={(e) => handleCompetencyChange(empId, index, e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        />
+      </div>
+    );
+  };
+
+  // --- KOMPONEN ITEM KPI (INTERAKTIF) ---
+  const KpiItem = ({ kpi, index, empId }) => {
+    const status = kpi.status;
+    return (
+      <div className="flex items-start gap-3 p-3 rounded-lg border">
+        <div className="mt-1">
+          {status === true ? (
+            <CheckCircle className="text-green-500" size={20} />
+          ) : status === false ? (
+            <XCircle className="text-red-500" size={20} />
+          ) : (
+            <AlertTriangle className="text-gray-400" size={20} />
+          )}
+        </div>
+        <div className="flex-1">
+          <h4 className="font-medium text-gray-900">{kpi.name}</h4>
+          <p className="text-sm text-gray-600 mt-1">Target: {kpi.target}</p>
+        </div>
+        <div className="flex gap-1">
+          <button 
+            onClick={() => handleKpiToggle(empId, index, true)}
+            className={`p-1 rounded ${status === true ? 'bg-green-100 text-green-700' : 'hover:bg-green-50'}`}
+            title="Achieved"
+          >
+            <CheckCircle size={16} />
+          </button>
+          <button 
+            onClick={() => handleKpiToggle(empId, index, false)}
+            className={`p-1 rounded ${status === false ? 'bg-red-100 text-red-700' : 'hover:bg-red-50'}`}
+            title="Not achieved"
+          >
+            <XCircle size={16} />
+          </button>
+          <button onClick={() => openModal('EDIT_KPI', empId, kpi, index)} className="p-1 rounded hover:bg-indigo-50" title="Edit">
+            <Pencil size={16} className="text-gray-500" />
+          </button>
+           <button onClick={() => handleKpiDelete(empId, index)} className="p-1 rounded hover:bg-red-50" title="Hapus">
+            <Trash2 size={16} className="text-gray-500" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // --- KOMPONEN CAREER PATH ---
+  const CareerPathSection = ({ title, items, empId, keyName }) => {
+    const isExpanded = expandedPaths[empId]?.[keyName] || false;
+    const icon = isExpanded ? ChevronUp : ChevronDown;
+    
+    return (
+      <div className="border rounded-xl overflow-hidden mb-4">
+        <button 
+          className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+          onClick={() => togglePath(empId, keyName)}
+        >
+          <div className="flex items-center gap-2">
+            <div className={`p-2 rounded-lg ${
+              keyName === 'short' ? 'bg-blue-100 text-blue-700' :
+              keyName === 'mid' ? 'bg-amber-100 text-amber-700' :
+              'bg-emerald-100 text-emerald-700'
+            }`}>
+              <Calendar size={20} />
+            </div>
+            <h3 className="font-bold text-gray-800">{title}</h3>
+          </div>
+          {icon && React.createElement(icon, { size: 20, className: "text-gray-500" })}
+        </button>
+        {isExpanded && (
+          <div className="p-4 bg-white">
+            <ul className="space-y-2">
+              {items.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <CheckCircle className="text-green-500 mt-0.5 flex-shrink-0" size={16} />
+                  <span className="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+  // --- STYLE UNTUK PRINT ---
+  const PrintStyles = () => (
+    <style>
+    {`
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #printable-report, #printable-report * {
+          visibility: visible;
+        }
+        #printable-report {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          margin: 0;
+          padding: 20px;
+          border: none !important;
+          box-shadow: none !important;
+        }
+        .no-print {
+          display: none !important;
+        }
+        textarea {
+           border: 1px solid #ccc !important;
+           background-color: #f8f8f8 !important;
+           color: #000 !important;
+        }
+        p, h1, h2, h3, h4, th, td, span, div {
+           color: #000 !important;
+        }
+        table {
+           page-break-inside: auto;
+        }
+        tr {
+           page-break-inside: avoid;
+           page-break-after: auto;
+        }
+        thead {
+           display: table-header-group;
+        }
+        tfoot {
+           display: table-footer-group;
+        }
+        .print-table-gap-good {
+            color: #15803d !important; /* text-green-600 */
+        }
+        .print-table-gap-bad {
+            color: #b91c1c !important; /* text-red-600 */
+        }
+        .print-kpi-score {
+            border: 1px solid #bae6fd !important; /* border-blue-200 */
+            background-color: #f0f9ff !important; /* bg-blue-50 */
+        }
+        .print-kpi-score h4 {
+            color: #1e40af !important; /* text-blue-800 */
+        }
+        .print-kpi-score p {
+            color: #1d4ed8 !important; /* text-blue-700 */
+        }
+      }
+    `}
+    </style>
+  );
+
+  // --- RENDER UTAMA APLIKASI ---
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <PrintStyles />
+      {/* Header */}
+      <header className="bg-white shadow-sm no-print">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Kopkar AKM Career Planner</h1>
+              <p className="text-gray-600">Perencanaan Karir & Penilaian Kinerja Tahunan</p>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <UserCheck size={20} />
+              <span>{employeesArray.length} Pengelola Inti</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Navigation Tabs */}
+      <nav className="bg-white border-b no-print">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-8">
+            {[
+              { id: 'dashboard', label: 'Dashboard', icon: Users },
+              { id: 'competency', label: 'Kompetensi', icon: Target },
+              { id: 'kpi', label: 'KPI Tahunan', icon: BarChart3 },
+              { id: 'career', label: 'Career Path', icon: TrendingUp },
+              { id: 'report', label: 'Laporan Tahunan', icon: FileText }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
+                  activeTab === tab.id
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <tab.icon size={18} />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Dashboard View */}
+        <div className={activeTab === 'dashboard' ? 'block' : 'hidden'}>
+          <div className="space-y-8">
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Overview Pengelola Inti</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                {employeesArray.map(emp => (
+                  <ProfileCard 
+                    key={emp.id} 
+                    emp={emp} 
+                    isActive={selectedEmployee.id === emp.id} 
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* KPI Summary (Sama seperti sebelumnya) */}
+              <div className="bg-white rounded-2xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <BarChart3 size={20} />
+                  Ringkasan KPI Tahunan
+                </h3>
+                <div className="space-y-4">
+                  {employeesArray.map(emp => {
+                    const { achieved, missed, pending, total } = getKpiStatusCount(emp.id);
+                    const achievedWidth = total > 0 ? (achieved / total) * 100 : 0;
+                    return (
+                      <div key={emp.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <h4 className="font-medium">{emp.name.split(' ')[0]}</h4>
+                          <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                            {achieved}/{total}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-2.5 rounded-full" style={{ width: `${achievedWidth}%` }} />
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-500 mt-1">
+                          <span>{achieved} tercapai</span>
+                          <span>{missed} gagal</span>
+                          <span>{pending} belum dinilai</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              {/* Career Progression (Sama seperti sebelumnya) */}
+              <div className="bg-white rounded-2xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <TrendingUp size={20} />
+                  Proyeksi Karir 5 Tahun
+                </h3>
+                <div className="space-y-4">
+                  {employeesArray.map(emp => (
+                    <div key={emp.id} className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                      <div className="flex items-center gap-3">
+                        <img src={emp.photo} alt={emp.name} className="w-10 h-10 rounded-full" />
+                        <span className="font-medium">{emp.name.split(' ')[0]}</span>
+                      </div>
+                      <div className="flex items-center gap-1" title="Biru: Pendek, Kuning: Menengah, Hijau: Panjang">
+                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Kompetensi View */}
+        <div className={activeTab === 'competency' ? 'block' : 'hidden'}>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">Matriks Kompetensi (Interaktif)</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {employeesArray.map(emp => (
+                <div key={emp.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                  <div className="p-5 border-b">
+                    <div className="flex items-center gap-4">
+                      <img src={emp.photo} alt={emp.name} className="w-14 h-14 rounded-full" />
+                      <div>
+                        <h3 className="font-bold text-lg">{emp.name.split(' ')[0]}</h3>
+                        <p className="text-gray-600">{emp.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2"><Target size={18} /> Kompetensi Inti</h4>
+                    <div className="space-y-2 mb-4">
+                      {emp.competencies.map((comp, idx) => (
+                        <CompetencyBar key={idx} comp={comp} empId={emp.id} index={idx} />
+                      ))}
+                    </div>
+                    <button onClick={() => openModal('ADD_COMPETENCY', emp.id)} className="w-full flex items-center justify-center gap-2 p-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 hover:border-gray-400 transition-colors">
+                      <PlusCircle size={16} /> Tambah Kompetensi Baru
+                    </button>
+                    <h4 className="font-bold text-gray-800 mt-6 mb-3 flex items-center gap-2"><GraduationCap size={18} /> Rencana Pelatihan</h4>
+                    <ul className="space-y-2">
+                      {emp.training.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <CheckCircle className="text-indigo-500 mt-0.5 flex-shrink-0" size={16} />
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* KPI View */}
+        <div className={activeTab === 'kpi' ? 'block' : 'hidden'}>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">Penilaian KPI Tahunan (Interaktif)</h2>
+            <p className="text-gray-600">Gunakan tombol ✅/❌ untuk menilai. Gunakan ✏️ untuk edit, atau 🗑️ untuk hapus.</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {employeesArray.map(emp => (
+                <div key={emp.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                  <div className="p-5 border-b bg-gray-50">
+                    <div className="flex items-center gap-4">
+                      <img src={emp.photo} alt={emp.name} className="w-14 h-14 rounded-full" />
+                      <div>
+                        <h3 className="font-bold text-lg">{emp.name.split(' ')[0]}</h3>
+                        <p className="text-gray-600">{emp.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2"><BarChart3 size={18} /> KPI Utama</h4>
+                    <div className="space-y-3 mb-4">
+                      {emp.kpis.map((kpi, idx) => (
+                        <KpiItem key={idx} kpi={kpi} index={idx} empId={emp.id} />
+                      ))}
+                    </div>
+                    <button onClick={() => openModal('ADD_KPI', emp.id)} className="w-full flex items-center justify-center gap-2 p-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 hover:border-gray-400 transition-colors">
+                      <PlusCircle size={16} /> Tambah KPI Baru
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Career Path View */}
+        <div className={activeTab === 'career' ? 'block' : 'hidden'}>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">Rencana Pengembangan Karir</h2>
+            <p className="text-gray-600">Rencana karir jangka pendek, menengah, dan panjang untuk kelima pengelola inti Kopkar AKM.</p>
+            <div className="space-y-8">
+              {employeesArray.map(emp => (
+                <div key={emp.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                  <div className="p-6 border-b">
+                    <div className="flex items-center gap-4">
+                      <img src={emp.photo} alt={emp.name} className="w-16 h-16 rounded-full" />
+                      <div>
+                        <h3 className="font-bold text-xl">{emp.name}</h3>
+                        <p className="text-gray-600">{emp.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <CareerPathSection title="🎯 Jangka Pendek (1–2 tahun)" items={emp.careerPath.short} empId={emp.id} keyName="short" />
+                    <CareerPathSection title="🚀 Jangka Menengah (3–5 tahun)" items={emp.careerPath.mid} empId={emp.id} keyName="mid" />
+                    <CareerPathSection title="🌟 Jangka Panjang (5–10 tahun)" items={emp.careerPath.long} empId={emp.id} keyName="long" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Report View - [DIPERBARUI DENGAN KONTEKS] */}
+        <div className={activeTab === 'report' ? 'block' : 'hidden'}>
+          <div className="space-y-6">
+            <div className="no-print bg-white rounded-2xl shadow-sm p-6 flex justify-between items-center">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Form Laporan Tahunan</h2>
+                    <p className="text-gray-600">Pilih karyawan untuk mengisi, menyetujui, dan mencetak laporan.</p>
+                </div>
+                <button 
+                  onClick={handlePrint} 
+                  className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700"
+                >
+                    <Printer size={18} />
+                    Cetak / Simpan ke PDF
+                </button>
+            </div>
+
+            <div className="no-print bg-white rounded-2xl shadow-sm p-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Karyawan</label>
+                <select
+                    value={selectedEmployeeId}
+                    onChange={(e) => setSelectedEmployeeId(e.target.value)}
+                    className="w-full max-w-sm p-2 border border-gray-300 rounded-lg"
+                >
+                    {employeesArray.map(emp => (
+                        <option key={emp.id} value={emp.id}>{emp.name}</option>
+                    ))}
+                </select>
+            </div>
+            
+            {/* [BARU] Kotak Ringkasan Kinerja untuk Konteks */}
+            <ReportSummaryView emp={selectedEmployee} />
+            
+            {/* Form Interaktif */}
+            <div className="bg-white rounded-2xl shadow-sm p-6 no-print">
+                 <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Isi Laporan Kinerja: {selectedEmployee.name}</h3>
+                 <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Penjelasan Target Tahunan (Review)</label>
+                    <p className="text-xs text-gray-500 mb-1">Gunakan ringkasan di atas sebagai referensi untuk menulis review pencapaian.</p>
+                    <textarea
+                        className="w-full p-3 border border-gray-300 rounded-lg min-h-[150px] text-sm"
+                        placeholder="Tuliskan review pencapaian target tahunan di sini..."
+                        value={selectedEmployee.annualReview}
+                        onChange={(e) => handleNotesChange(selectedEmployeeId, 'annualReview', e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Potensi Pengembangan Diri</label>
+                    <p className="text-xs text-gray-500 mb-1">Gunakan ringkasan 'Gap' kompetensi di atas untuk menentukan rencana pengembangan.</p>
+                    <textarea
+                        className="w-full p-3 border border-gray-300 rounded-lg min-h-[150px] text-sm"
+                        placeholder="Tuliskan area potensi pengembangan diri dan rencana tindak lanjut..."
+                        value={selectedEmployee.developmentPotential}
+                        onChange={(e) => handleNotesChange(selectedEmployeeId, 'developmentPotential', e.target.value)}
+                    />
+                </div>
+            </div>
+            
+            {/* Kotak Approval Interaktif */}
+            <div className="bg-white rounded-2xl shadow-sm p-6 no-print">
+              <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Persetujuan Laporan</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ApprovalBox
+                  title="Manajer Koperasi"
+                  approval={selectedEmployee.approval.manager}
+                  onApprove={() => dispatch({ type: 'APPROVE_REPORT', payload: { empId: selectedEmployeeId, role: 'manager' } })}
+                />
+                <ApprovalBox
+                  title="Ketua Koperasi"
+                  approval={selectedEmployee.approval.head}
+                  onApprove={() => dispatch({ type: 'APPROVE_REPORT', payload: { empId: selectedEmployeeId, role: 'head' } })}
+                />
+              </div>
+            </div>
+
+            {/* Komponen Laporan untuk di-print (tersembunyi saat tidak print) */}
+            <div className="hidden print:block">
+                <PrintableReport emp={selectedEmployee} />
+            </div>
+
+          </div>
+        </div>
+        
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t mt-12 no-print">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <p className="text-center text-gray-500 text-sm">
+            © {new Date().getFullYear()} Koperasi Adaro Karya Mandiri (Kopkar AKM) — Sistem Perencanaan Karir & Penilaian Kinerja
+          </p>
+        </div>
+      </footer>
+      
+      {/* --- MODAL RENDERER --- */}
+      <Modal 
+        isOpen={modal.isOpen} 
+        onClose={closeModal}
+        title={
+          modal.type === 'ADD_KPI' ? 'Tambah KPI Baru' :
+          modal.type === 'EDIT_KPI' ? 'Edit KPI' :
+          modal.type === 'ADD_COMPETENCY' ? 'Tambah Kompetensi Baru' :
+          modal.type === 'EDIT_COMPETENCY' ? 'Edit Kompetensi' : ''
+        }
+      >
+        {(modal.type === 'ADD_KPI' || modal.type === 'EDIT_KPI') && (
+          <KpiForm 
+            onSubmit={handleFormSubmit}
+            initialData={modal.type === 'EDIT_KPI' ? modal.data : undefined}
+          />
+        )}
+        {(modal.type === 'ADD_COMPETENCY' || modal.type === 'EDIT_COMPETENCY') && (
+          <CompetencyForm 
+            onSubmit={handleFormSubmit}
+            initialData={modal.type === 'EDIT_COMPETENCY' ? modal.data : undefined}
+          />
+        )}
+      </Modal>
+    </div>
+  );
+};
+
+export default App;
