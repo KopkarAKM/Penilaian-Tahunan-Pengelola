@@ -23,11 +23,6 @@
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #4f46e5; cursor: pointer; margin-top: -10px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #d1d5db; border-radius: 3px; }
     
-    /* Career Path Styles */
-    .timeline-item { position: relative; padding-left: 24px; padding-bottom: 24px; border-left: 2px solid #e5e7eb; }
-    .timeline-item:last-child { border-left: 2px solid transparent; }
-    .timeline-dot { position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid #4f46e5; }
-    
     @media print {
       @page { size: A4; margin: 10mm; }
       body { background-color: white; padding-bottom: 0; }
@@ -100,7 +95,7 @@
   <div id="print-container" class="print-only"></div>
 
   <script>
-    // --- DATA SUMBER (STRUCTURED KPI: GLOBAL & DETAIL) ---
+    // --- DATA SUMBER (INCLUDING GAP ANALYSIS) ---
     const initialEmployees = {
       'mahmudah': {
         id: 'mahmudah', name: 'Mahmudah Hayati, S.H.', role: 'Manager / Kabag Adm & Keuangan', photo: 'https://ui-avatars.com/api/?name=MH&background=e0e7ff&color=4f46e5',
@@ -108,10 +103,12 @@
         kpis: [
             { type: 'global', name: 'Total Pendapatan Koperasi', target: 'Rp 2,574 Miliar', status: null, reason: '', evidence: null },
             { type: 'global', name: 'Efisiensi Keuangan', target: 'Rp 185 Juta', status: null, reason: '', evidence: null },
-            { type: 'global', name: 'Kepuasan Anggota', target: 'Min 90%', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Laporan Keuangan Bulanan', target: 'Tgl 10 Setiap Bulan', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Monitoring Anggaran', target: 'Evaluasi Mingguan', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Audit Internal', target: '1x per Semester', status: null, reason: '', evidence: null }
+        ],
+        gaps: [
+            { area: "Literasi Keuangan Strategis", desc: "Cenderung pendekatan administratif/hukum, perlu lebih tajam dalam analisis profitabilitas.", action: "Pelatihan 'Finance for Non-Finance Manager'" },
+            { area: "Agilitas Bisnis", desc: "Perlu lebih berani mengambil risiko terukur untuk ekspansi, tidak hanya kepatuhan.", action: "Pimpin 1 Proyek Inovasi Bisnis (Digital)" }
         ],
         careerPath: { short: ['Sertifikasi Manajer', 'Analisis Laporan'], mid: ['General Manager', 'Magister Manajemen'], long: ['Konsultan Koperasi', 'Pengurus Inti'] }, review: "", potential: "", approval: { manager: {date: null}, head: {date: null} }
       },
@@ -121,9 +118,12 @@
         kpis: [
             { type: 'global', name: 'Efisiensi Biaya Operasional', target: 'Hemat Rp 155 Juta', status: null, reason: '', evidence: null },
             { type: 'global', name: 'Zero Accident', target: '0 Kasus Kecelakaan', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Kontrol Biaya BBM', target: 'Max Rp 19,2 Jt', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Kontrol Perbaikan Unit', target: 'Max Rp 9,5 Jt', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Kontrol Biaya BBM & Perbaikan', target: 'Sesuai Budget', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Inspeksi K3 Rutin', target: '1x per Minggu', status: null, reason: '', evidence: null }
+        ],
+        gaps: [
+            { area: "Efisiensi Biaya (Cost Control)", desc: "Fokus masih pada 'barang siap', perlu ditingkatkan ke 'barang siap & murah'.", action: "Workshop Cost Benefit Analysis" },
+            { area: "Negosiasi Vendor", desc: "Perlu kemampuan menekan harga vendor tanpa mengurangi kualitas layanan.", action: "Dilibatkan dalam negosiasi kontrak besar" }
         ],
         careerPath: { short: ['Sertifikasi POP', 'Manajemen Risiko'], mid: ['Manajer Operasional', 'Assesor Kompetensi'], long: ['Direktur Operasional', 'Wirausahawan'] }, review: "", potential: "", approval: { manager: {date: null}, head: {date: null} }
       },
@@ -133,9 +133,12 @@
         kpis: [
             { type: 'global', name: 'Rasio NPL (Gagal Bayar)', target: '0% (Nihil)', status: null, reason: '', evidence: null },
             { type: 'global', name: 'Productivity Total USP', target: 'Rp 1,913 Miliar', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Pendapatan Jasa USP', target: 'Rp 1,556 Miliar', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Pendapatan Pinj. Konsumtif', target: 'Rp 241 Juta', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Verifikasi Berkas Kredit', target: '100% Lengkap', status: null, reason: '', evidence: null }
+            { type: 'detail', name: 'Verifikasi Berkas Kredit', target: '100% Lengkap', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Penagihan Aktif', target: 'Harian', status: null, reason: '', evidence: null }
+        ],
+        gaps: [
+            { area: "Analisis Risiko Strategis", desc: "Cenderung administratif/pembukuan. Perlu ketajaman menilai karakter peminjam.", action: "Sertifikasi Manajemen Risiko Kredit" },
+            { area: "Sales & Marketing", desc: "Perlu lebih proaktif menawarkan produk, bukan hanya menunggu nasabah.", action: "Pelatihan Service Excellence & Selling" }
         ],
         careerPath: { short: ['Penilaian Aset', 'Manajemen Risiko'], mid: ['Manajer Bisnis', 'Pengawas Syariah'], long: ['Konsultan Mikro', 'Pimpinan Cabang'] }, review: "", potential: "", approval: { manager: {date: null}, head: {date: null} }
       },
@@ -145,9 +148,12 @@
         kpis: [
             { type: 'global', name: 'Laporan Keuangan Tepat Waktu', target: 'Tanggal 10', status: null, reason: '', evidence: null },
             { type: 'global', name: 'Selisih Kas (Cash Opname)', target: 'Nihil', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Kontrol Biaya ATK', target: 'Max Rp 3 Juta', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Kontrol Biaya Internet', target: 'Max Rp 7,2 Juta', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Kontrol Biaya ATK & Internet', target: 'Sesuai Budget', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Input Jurnal Harian', target: 'H+1 Transaksi', status: null, reason: '', evidence: null }
+        ],
+        gaps: [
+            { area: "Analisis Data (Insight)", desc: "Mampu membuat laporan, tapi belum memberikan saran perbaikan dari data.", action: "Pelatihan Excel Dashboard & Pivot" },
+            { area: "Kepemimpinan", desc: "Belum teruji memimpin tim atau proyek mandiri.", action: "Menjadi PIC Audit Inventaris" }
         ],
         careerPath: { short: ['Brevet A&B', 'Software Akuntansi'], mid: ['Supervisor Keuangan', 'S1 Akuntansi'], long: ['Manajer Keuangan'] }, review: "", potential: "", approval: { manager: {date: null}, head: {date: null} }
       },
@@ -160,13 +166,17 @@
             { type: 'detail', name: 'Penjualan Tiket', target: 'Target Bulanan', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Update Konten Sosmed', target: '2x per Minggu', status: null, reason: '', evidence: null }
         ],
+        gaps: [
+            { area: "Pengalaman Operasional", desc: "Minim pengalaman teknis travel (ticketing, itinerary) dan negosiasi.", action: "Magang/Studi Banding di Travel Agent Mitra" },
+            { area: "Kemandirian Bisnis", desc: "Masih butuh arahan detail, perlu dilatih berpikir sebagai pemilik bisnis.", action: "Kelola 1 Paket Wisata dari A-Z" }
+        ],
         careerPath: { short: ['Tour Leader', 'Digital Marketing'], mid: ['Manajer Bisnis', 'Sertifikasi IATA'], long: ['Direktur Pariwisata', 'Konsultan Travel'] }, review: "", potential: "", approval: { manager: {date: null}, head: {date: null} }
       }
     };
 
     // --- STATE ---
     let state = {
-      employees: JSON.parse(localStorage.getItem('kopkarMobileVFinal4')) || initialEmployees,
+      employees: JSON.parse(localStorage.getItem('kopkarMobileVFinal5')) || initialEmployees,
       activeTab: 'dashboard',
       selectedEmpId: 'mahmudah',
       modalConfig: null,
@@ -174,8 +184,7 @@
     };
 
     const saveState = () => {
-      localStorage.setItem('kopkarMobileVFinal4', JSON.stringify(state.employees));
-      // Removed renderApp from here to fix typing issue
+      localStorage.setItem('kopkarMobileVFinal5', JSON.stringify(state.employees));
     };
 
     // --- MANIFEST PWA ---
@@ -193,7 +202,6 @@
         { id: 'dashboard', label: 'Home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
         { id: 'competency', label: 'Skill', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
         { id: 'kpi', label: 'KPI', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
-        { id: 'career', label: 'Career Path', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
         { id: 'report', label: 'Laporan', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' }
       ];
       
@@ -218,7 +226,6 @@
       if (state.activeTab === 'dashboard') renderDashboard(content);
       else if (state.activeTab === 'competency') renderCompetency(content);
       else if (state.activeTab === 'kpi') renderKPI(content);
-      else if (state.activeTab === 'career') renderCareer(content);
       else if (state.activeTab === 'report') renderReport(content);
     }
 
@@ -267,29 +274,8 @@
              <h2 class="text-lg font-bold text-slate-800">Target KPI 2025</h2>
              <button onclick="openModal('ADD_KPI')" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-indigo-100">+ Tambah</button>
           </div>
-
-          <!-- Global KPIs -->
-          <div>
-             <h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-3 pl-1">Target Utama (Global)</h3>
-             <div class="space-y-4">
-                ${globalKpis.map((k, i) => {
-                    // Find original index
-                    const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type);
-                    return renderKpiCard(k, originalIdx);
-                }).join('')}
-             </div>
-          </div>
-
-          <!-- Detail KPIs -->
-          <div>
-             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 pl-1">Aktivitas Kunci (Detail)</h3>
-             <div class="space-y-4">
-                ${detailKpis.map((k, i) => {
-                    const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type);
-                    return renderKpiCard(k, originalIdx);
-                }).join('')}
-             </div>
-          </div>
+          <div><h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-3 pl-1">Target Utama (Global)</h3><div class="space-y-4">${globalKpis.map((k, i) => { const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type); return renderKpiCard(k, originalIdx); }).join('')}</div></div>
+          <div><h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 pl-1">Aktivitas Kunci (Detail)</h3><div class="space-y-4">${detailKpis.map((k, i) => { const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type); return renderKpiCard(k, originalIdx); }).join('')}</div></div>
         </div>
       `;
     }
@@ -299,46 +285,10 @@
       el.innerHTML = `<div class="space-y-4 pb-20"><div class="flex justify-between items-center px-1"><h2 class="text-lg font-bold text-slate-800">Kompetensi (SOP)</h2><button onclick="openModal('ADD_COMP')" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-indigo-100">+ Tambah</button></div>${e.competencies.map((c, idx) => `<div class="bg-white p-5 rounded-xl card-shadow"><div class="flex justify-between items-start mb-4"><div><h4 class="font-bold text-slate-800 text-sm">${c.name}</h4><p class="text-xs text-slate-400 mt-0.5">Ref: ${c.ref || '-'}</p></div><span class="text-xl font-bold text-indigo-600">${c.current}<span class="text-sm text-gray-300 font-normal">/5</span></span></div><div class="relative pt-2 pb-1"><input type="range" min="1" max="5" value="${c.current}" oninput="updateScore('${e.id}', 'competencies', ${idx}, this.value)" class="w-full accent-indigo-600"><div class="flex justify-between text-[10px] text-gray-400 font-medium mt-1 uppercase tracking-wide"><span>Pemula</span><span>Mahir</span><span>Ahli</span></div></div></div>`).join('')}</div>`;
     }
 
-    // --- 4. CAREER PATH RENDERER ---
-    function renderCareer(el) {
-      const e = state.employees[state.selectedEmpId];
-      el.innerHTML = `
-        <div class="pb-20 space-y-6">
-            <h2 class="text-lg font-bold text-slate-800 px-1">Rencana Karir (Career Path)</h2>
-            
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <div class="border-l-2 border-slate-200 pl-6 space-y-8">
-                    <div class="timeline-item">
-                        <div class="timeline-dot bg-blue-500 border-white ring-4 ring-blue-50"></div>
-                        <h3 class="text-sm font-bold text-blue-600 uppercase mb-2">Jangka Pendek (1-2 Th)</h3>
-                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
-                            ${e.careerPath.short.map(i => `<li>${i}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot bg-amber-500 border-white ring-4 ring-amber-50"></div>
-                        <h3 class="text-sm font-bold text-amber-600 uppercase mb-2">Jangka Menengah (3-5 Th)</h3>
-                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
-                            ${e.careerPath.mid.map(i => `<li>${i}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot bg-emerald-500 border-white ring-4 ring-emerald-50"></div>
-                        <h3 class="text-sm font-bold text-emerald-600 uppercase mb-2">Jangka Panjang (5+ Th)</h3>
-                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
-                            ${e.careerPath.long.map(i => `<li>${i}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-      `;
-    }
-
     function renderReport(el) {
       const e = state.employees[state.selectedEmpId];
       const isApproved = e.approval.manager.date && e.approval.head.date;
-
+      // Render report layout
       el.innerHTML = `
         <div class="pb-20 space-y-6">
            <div class="bg-white p-6 rounded-xl card-shadow text-center border border-slate-100">
@@ -347,14 +297,31 @@
               </div>
               <h2 class="text-lg font-bold text-slate-800 mb-1">Laporan Akhir Tahun</h2>
               <p class="text-xs text-slate-500 mb-6">Status Dokumen: ${isApproved ? '<span class="text-green-600 font-bold bg-green-50 px-2 py-1 rounded">DISETUJUI</span>' : '<span class="text-amber-500 font-bold bg-amber-50 px-2 py-1 rounded">DRAFT</span>'}</p>
-              
-              <button onclick="window.print()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-200 active:scale-95 transition-transform">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                Cetak PDF (A4)
-              </button>
+              <button onclick="window.print()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-200 active:scale-95 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Cetak PDF (A4)</button>
            </div>
+           
+           <!-- Gap Analysis Section (New) -->
+           ${e.gaps && e.gaps.length > 0 ? `
+           <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
+               <h3 class="text-sm font-bold text-amber-800 mb-3 flex items-center gap-2">
+                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                   Analisis Kesenjangan & Rekomendasi
+               </h3>
+               <div class="space-y-3">
+                   ${e.gaps.map(gap => `
+                   <div class="bg-white p-3 rounded-lg border border-amber-100 shadow-sm">
+                       <div class="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">${gap.area}</div>
+                       <p class="text-sm text-slate-600 mb-2 leading-relaxed">${gap.desc}</p>
+                       <div class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block">
+                           Solusi: ${gap.action}
+                       </div>
+                   </div>
+                   `).join('')}
+               </div>
+           </div>
+           ` : ''}
 
-           <!-- Input Evaluasi (FIXED: Removed oninput re-render) -->
+           <!-- Input Evaluasi -->
            <div class="bg-white p-5 rounded-xl card-shadow space-y-5">
               <div>
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Review Kinerja</label>
@@ -369,84 +336,57 @@
            <!-- Approval Actions -->
            <div class="bg-white p-5 rounded-xl card-shadow">
               <h3 class="font-bold text-slate-800 mb-4 text-sm">Persetujuan Digital</h3>
-              <div class="space-y-3">
-                 ${renderApproveBtn('manager', 'Manajer Koperasi', e)}
-                 ${renderApproveBtn('head', 'Ketua Koperasi', e)}
-              </div>
+              <div class="space-y-3">${renderApproveBtn('manager', 'Manajer Koperasi', e)}${renderApproveBtn('head', 'Ketua Koperasi', e)}</div>
            </div>
         </div>
-        
-        <!-- Hidden Print Template -->
-        ${renderPrintTemplate(e)}
-      `;
-      
-      // Add Event Listeners manually to avoid re-render loop
-      document.getElementById('input-review').addEventListener('input', (e) => {
-          state.employees[state.selectedEmpId].review = e.target.value;
-          saveState(); // Save but don't re-render whole app
+        ${renderPrintTemplate(e)}`;
+
+      // Attach Event Listeners for inputs (NO Re-render on input)
+      document.getElementById('input-review').addEventListener('input', (event) => {
+          state.employees[state.selectedEmpId].review = event.target.value;
+          saveState();
       });
-      document.getElementById('input-potential').addEventListener('input', (e) => {
-          state.employees[state.selectedEmpId].potential = e.target.value;
+      document.getElementById('input-potential').addEventListener('input', (event) => {
+          state.employees[state.selectedEmpId].potential = event.target.value;
           saveState();
       });
     }
 
     function renderApproveBtn(role, label, e) {
         const date = e.approval[role].date;
-        if (date) {
-            return `<div class="flex items-center justify-between p-3 bg-green-50 rounded-xl border border-green-100 text-green-800"><span class="text-sm font-bold flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ${label}</span><div class="text-right"><div class="text-[10px] uppercase tracking-wide opacity-70">Disetujui</div><div class="text-xs font-mono font-bold">${new Date(date).toLocaleDateString('id-ID')}</div></div></div>`;
-        }
+        if (date) return `<div class="flex items-center justify-between p-3 bg-green-50 rounded-xl border border-green-100 text-green-800"><span class="text-sm font-bold flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ${label}</span><div class="text-right"><div class="text-[10px] uppercase tracking-wide opacity-70">Disetujui</div><div class="text-xs font-mono font-bold">${new Date(date).toLocaleDateString('id-ID')}</div></div></div>`;
         return `<button onclick="approve('${role}')" class="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-400 font-bold text-sm hover:bg-slate-50 hover:border-indigo-300 hover:text-indigo-600 transition-all active:scale-95">Tap to Approve (${label})</button>`;
     }
 
     // --- LOGIC ACTIONS ---
     function setTab(id) { state.activeTab = id; renderApp(); }
     function changeEmpGlobal(id) { state.selectedEmpId = id; renderApp(); }
+    function updateScore(id, type, idx, val) { state.employees[id][type][idx].current = parseInt(val); localStorage.setItem('kopkarMobileVFinal5', JSON.stringify(state.employees)); }
     
-    function updateScore(id, type, idx, val) { 
-        state.employees[id][type][idx].current = parseInt(val); 
-        localStorage.setItem('kopkarMobileVFinal3', JSON.stringify(state.employees)); 
-        // No renderApp call to avoid slider jump
-    }
-
     function updateKpiStatus(empId, idx, status) {
       if (status === false) {
         setTimeout(() => {
           Swal.fire({
             title: 'Target Tidak Tercapai', input: 'textarea', inputLabel: 'Jelaskan kendala:', inputPlaceholder: 'Contoh: Anggaran dipotong...', showCancelButton: true, confirmButtonText: 'Simpan', confirmButtonColor: '#ef4444'
           }).then((result) => {
-            if (result.isConfirmed && result.value) { 
-                state.employees[empId].kpis[idx].reason = result.value; 
-                state.employees[empId].kpis[idx].status = status; 
-                saveState(); 
-                renderApp(); // Need re-render to show reason box
-            }
+            if (result.isConfirmed && result.value) { state.employees[empId].kpis[idx].reason = result.value; state.employees[empId].kpis[idx].status = status; saveState(); renderApp(); }
           });
         }, 50);
       } else {
-        state.employees[empId].kpis[idx].reason = ""; 
-        state.employees[empId].kpis[idx].status = status; 
-        saveState();
-        renderApp();
+        state.employees[empId].kpis[idx].reason = ""; state.employees[empId].kpis[idx].status = status; saveState(); renderApp();
       }
     }
     
     function approve(role) {
         Swal.fire({ title: 'Konfirmasi', text: "Setujui laporan ini secara digital?", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Setujui', confirmButtonColor: '#10b981' }).then((result) => {
-            if (result.isConfirmed) { 
-                state.employees[state.selectedEmpId].approval[role].date = new Date().toISOString(); 
-                saveState(); 
-                renderApp();
-            }
+            if (result.isConfirmed) { state.employees[state.selectedEmpId].approval[role].date = new Date().toISOString(); saveState(); renderApp(); }
         })
     }
 
     function deleteItem(type, empId, idx) {
       if(confirm('Hapus item ini?')) {
         if(type === 'kpis') state.employees[empId].kpis.splice(idx, 1);
-        // else if(type === 'competencies') state.employees[empId].competencies.splice(idx, 1);
-        saveState();
-        renderApp();
+        saveState(); renderApp();
       }
     }
 
@@ -464,8 +404,7 @@
         reader.onload = function(ev) {
             const { empId, idx } = state.uploadContext;
             state.employees[empId].kpis[idx].evidence = { type: file.type, data: ev.target.result };
-            saveState();
-            renderApp();
+            saveState(); renderApp();
             Swal.fire('Berhasil', 'Bukti dukung tersimpan', 'success');
         };
         reader.readAsDataURL(file);
@@ -481,11 +420,7 @@
     
     function deleteEvidence(empId, idx) {
         Swal.fire({ title: 'Hapus Bukti?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Hapus', confirmButtonColor: '#ef4444' }).then((r) => {
-            if(r.isConfirmed) { 
-                state.employees[empId].kpis[idx].evidence = null; 
-                saveState(); 
-                renderApp();
-            }
+            if(r.isConfirmed) { state.employees[empId].kpis[idx].evidence = null; saveState(); renderApp(); }
         });
     }
 
@@ -505,12 +440,7 @@
         reader.onload = function(e) {
             try {
                 const newData = JSON.parse(e.target.result);
-                if (newData.mahmudah) { 
-                    state.employees = newData; 
-                    saveState(); 
-                    renderApp();
-                    Swal.fire('Berhasil', 'Data dipulihkan', 'success'); 
-                }
+                if (newData.mahmudah) { state.employees = newData; saveState(); renderApp(); Swal.fire('Berhasil', 'Data dipulihkan', 'success'); }
             } catch(err) { Swal.fire('Error', 'File rusak', 'error'); }
         };
         reader.readAsText(file);
@@ -529,24 +459,14 @@
         
         if(type === 'ADD_KPI') {
             title.innerText = 'Tambah KPI';
-            body.innerHTML = `
-                <input id="m-1" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Indikator">
-                <input id="m-2" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Target">
-                <select id="m-3" class="w-full p-3 bg-slate-100 rounded-xl mb-4"><option value="global">Global (Utama)</option><option value="detail">Detail (Aktivitas)</option></select>
-                <button onclick="submitModal('ADD_KPI')" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Simpan</button>
-            `;
+            body.innerHTML = `<input id="m-1" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Indikator"><input id="m-2" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Target"><select id="m-3" class="w-full p-3 bg-slate-100 rounded-xl mb-4"><option value="global">Global (Utama)</option><option value="detail">Detail (Aktivitas)</option></select><button onclick="submitModal('ADD_KPI')" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Simpan</button>`;
         } else if(type === 'EDIT_KPI') {
              const kpi = state.employees[empId].kpis[idx];
              title.innerText = 'Edit KPI';
-             body.innerHTML = `
-                <input id="m-1" class="w-full p-3 bg-slate-100 rounded-xl mb-3" value="${kpi.name}">
-                <input id="m-2" class="w-full p-3 bg-slate-100 rounded-xl mb-3" value="${kpi.target}">
-                <select id="m-3" class="w-full p-3 bg-slate-100 rounded-xl mb-4"><option value="global" ${kpi.type === 'global' ? 'selected' : ''}>Global (Utama)</option><option value="detail" ${kpi.type === 'detail' ? 'selected' : ''}>Detail (Aktivitas)</option></select>
-                <button onclick="submitModal()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Update</button>
-            `;
+             body.innerHTML = `<input id="m-1" class="w-full p-3 bg-slate-100 rounded-xl mb-3" value="${kpi.name}"><input id="m-2" class="w-full p-3 bg-slate-100 rounded-xl mb-3" value="${kpi.target}"><select id="m-3" class="w-full p-3 bg-slate-100 rounded-xl mb-4"><option value="global" ${kpi.type === 'global' ? 'selected' : ''}>Global (Utama)</option><option value="detail" ${kpi.type === 'detail' ? 'selected' : ''}>Detail (Aktivitas)</option></select><button onclick="submitModal()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Update</button>`;
         } else {
             title.innerText = 'Tambah Kompetensi';
-            body.innerHTML = `<input id="m-1" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Kompetensi"><input id="m-ref" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Ref SOP"><button onclick="submitModal()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Simpan</button>`;
+            body.innerHTML = `<input id="m-1" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Kompetensi"><input id="m-ref" class="w-full p-3 bg-slate-100 rounded-xl mb-3" placeholder="Ref SOP"><button onclick="submitModal('ADD_COMP')" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Simpan</button>`;
         }
     }
     
@@ -573,21 +493,17 @@
             state.employees[targetEmpId].kpis[idx].name = v1;
             state.employees[targetEmpId].kpis[idx].target = v2;
             state.employees[targetEmpId].kpis[idx].type = v3;
-        }
-        else {
+        } else {
             state.employees[targetEmpId].competencies.push({ name: v1, ref: document.getElementById('m-ref').value, target: 5, current: 0 });
         }
-        closeModal(); 
-        saveState();
-        renderApp();
+        closeModal(); saveState(); renderApp();
     }
 
-    // --- PRINT TEMPLATE ---
     function renderPrintTemplate(emp) {
       const kpiOk = emp.kpis.filter(k=>k.status===true).length;
       const kpiScore = emp.kpis.length > 0 ? Math.round((kpiOk/emp.kpis.length)*100) : 0;
       const date = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
-      return `<div id="printable-report" class="print-only bg-white"><div class="text-center border-b-2 border-black pb-4 mb-6"><h1 class="uppercase font-bold text-xl tracking-wide">KOPERASI KARYAWAN ADARO KARYA MANDIRI</h1><h2 class="text-lg">LAPORAN AKUNTABILITAS KINERJA TAHUNAN</h2><p class="text-sm">Tahun Buku: ${new Date().getFullYear()}</p></div><table class="w-full mb-6 text-sm"><tr><td class="w-32 font-bold py-1">Nama</td><td>: ${emp.name}</td><td class="w-32 font-bold">Periode</td><td>: Jan - Des 2025</td></tr><tr><td class="font-bold py-1">Jabatan</td><td>: ${emp.role}</td><td class="font-bold">ID Karyawan</td><td>: ${emp.id.toUpperCase()}</td></tr></table><div class="mb-6"><h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">I. PENCAPAIAN KPI (JOB GOALS)</h3><div class="text-sm mb-2 font-bold">Skor Capaian: ${kpiScore}% (${kpiOk}/${emp.kpis.length})</div><table class="w-full text-xs border-collapse border border-black"><tr class="bg-gray-100"><th class="border border-black p-1 text-left w-1/3">Indikator</th><th class="border border-black p-1 text-left w-1/4">Target</th><th class="border border-black p-1 text-center w-1/6">Status</th><th class="border border-black p-1 text-left w-1/4">Kendala / Bukti</th></tr>${emp.kpis.map(k => `<tr><td class="border border-black p-1">${k.name} ${k.type==='global'?'<b style="color:blue">(Utama)</b>':''}</td><td class="border border-black p-1">${k.target}</td><td class="border border-black p-1 text-center font-bold">${k.status===true?'TERCAPAI':(k.status===false?'GAGAL':'-')}</td><td class="border border-black p-1 italic text-xs">${k.status===false ? (k.reason || '-') : (k.evidence ? '[Bukti Terlampir]' : '-')}</td></tr>`).join('')}</table></div><div class="mb-6"><h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">II. EVALUASI KOMPETENSI (SOP)</h3><table class="w-full text-xs border-collapse border border-black"><tr class="bg-gray-100"><th class="border border-black p-1 text-left">Kompetensi</th><th class="border border-black p-1 text-left w-1/4">Ref SOP</th><th class="border border-black p-1 text-center w-12">Target</th><th class="border border-black p-1 text-center w-12">Aktual</th></tr>${emp.competencies.map(c => `<tr><td class="border border-black p-1 font-bold">${c.name}</td><td class="border border-black p-1 italic">${c.ref}</td><td class="border border-black p-1 text-center">${c.target}</td><td class="border border-black p-1 text-center font-bold">${c.current}</td></tr>`).join('')}</table></div><div class="mb-8"><h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">III. ULASAN & PENGEMBANGAN</h3><div class="border border-black p-2 mb-2 min-h-[60px] text-xs"><b class="block mb-1">ULASAN:</b>${emp.review || '-'}</div><div class="border border-black p-2 min-h-[60px] text-xs"><b class="block mb-1">PENGEMBANGAN:</b>${emp.potential || '-'}</div></div><div class="flex justify-between mt-8 px-8 page-break-inside-avoid text-xs"><div class="text-center w-1/3"><p class="mb-12">Manajer Koperasi</p>${emp.approval.manager.date ? `<div class="border border-green-600 text-green-700 font-bold p-1 mb-1">DIGITALLY SIGNED<br>${new Date(emp.approval.manager.date).toLocaleDateString('id-ID')}</div>` : ''}<p class="font-bold underline">( ................................. )</p></div><div class="text-center w-1/3"><p class="mb-12">Ketua Pengurus</p>${emp.approval.head.date ? `<div class="border border-green-600 text-green-700 font-bold p-1 mb-1">DIGITALLY SIGNED<br>${new Date(emp.approval.head.date).toLocaleDateString('id-ID')}</div>` : ''}<p class="font-bold underline">( ................................. )</p></div></div><p class="text-center text-[10px] mt-6 italic">Dicetak pada ${date}</p></div>`;
+      return `<div id="printable-report" class="print-only bg-white"><div class="text-center border-b-2 border-black pb-4 mb-6"><h1 class="uppercase font-bold text-xl tracking-wide">KOPERASI KARYAWAN ADARO KARYA MANDIRI</h1><h2 class="text-lg">LAPORAN AKUNTABILITAS KINERJA TAHUNAN</h2><p class="text-sm">Tahun Buku: ${new Date().getFullYear()}</p></div><table class="w-full mb-6 text-sm"><tr><td class="w-32 font-bold py-1">Nama</td><td>: ${emp.name}</td><td class="w-32 font-bold">Periode</td><td>: Jan - Des 2025</td></tr><tr><td class="font-bold py-1">Jabatan</td><td>: ${emp.role}</td><td class="font-bold">ID Karyawan</td><td>: ${emp.id.toUpperCase()}</td></tr></table><div class="mb-6"><h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">I. PENCAPAIAN KPI (JOB GOALS)</h3><div class="text-sm mb-2 font-bold">Skor Capaian: ${kpiScore}% (${kpiOk}/${emp.kpis.length})</div><table class="w-full text-xs border-collapse border border-black"><tr class="bg-gray-100"><th class="border border-black p-1 text-left w-1/3">Indikator</th><th class="border border-black p-1 text-left w-1/4">Target</th><th class="border border-black p-1 text-center w-1/6">Status</th><th class="border border-black p-1 text-left w-1/4">Kendala / Bukti</th></tr>${emp.kpis.map(k => `<tr><td class="border border-black p-1">${k.name} ${k.type==='global'?'<b style="color:blue">(Utama)</b>':''}</td><td class="border border-black p-1">${k.target}</td><td class="border border-black p-1 text-center font-bold">${k.status===true?'TERCAPAI':(k.status===false?'GAGAL':'-')}</td><td class="border border-black p-1 italic text-xs">${k.status===false ? (k.reason || '-') : (k.evidence ? '[Bukti Terlampir]' : '-')}</td></tr>`).join('')}</table></div><div class="mb-6"><h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">II. ANALISIS KESENJANGAN & KOMPETENSI</h3>${emp.gaps && emp.gaps.length > 0 ? `<div class="border border-black p-2 mb-2 bg-gray-50"><b class="text-xs block mb-1">GAP ANALYSIS:</b><ul class="list-disc pl-4 text-xs">${emp.gaps.map(g => `<li><b>${g.area}:</b> ${g.desc} <br><i>Solusi: ${g.action}</i></li>`).join('')}</ul></div>` : ''}<table class="w-full text-xs border-collapse border border-black"><tr class="bg-gray-100"><th class="border border-black p-1 text-left">Kompetensi</th><th class="border border-black p-1 text-left w-1/4">Ref SOP</th><th class="border border-black p-1 text-center w-12">Target</th><th class="border border-black p-1 text-center w-12">Aktual</th></tr>${emp.competencies.map(c => `<tr><td class="border border-black p-1 font-bold">${c.name}</td><td class="border border-black p-1 italic">${c.ref}</td><td class="border border-black p-1 text-center">${c.target}</td><td class="border border-black p-1 text-center font-bold">${c.current}</td></tr>`).join('')}</table></div><div class="mb-8"><h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">III. ULASAN & PENGEMBANGAN</h3><div class="border border-black p-2 mb-2 min-h-[60px] text-xs"><b class="block mb-1">ULASAN:</b>${emp.review || '-'}</div><div class="border border-black p-2 min-h-[60px] text-xs"><b class="block mb-1">PENGEMBANGAN:</b>${emp.potential || '-'}</div></div><div class="flex justify-between mt-8 px-8 page-break-inside-avoid text-xs"><div class="text-center w-1/3"><p class="mb-12">Manajer Koperasi</p>${emp.approval.manager.date ? `<div class="border border-green-600 text-green-700 font-bold p-1 mb-1">DIGITALLY SIGNED<br>${new Date(emp.approval.manager.date).toLocaleDateString('id-ID')}</div>` : ''}<p class="font-bold underline">( ................................. )</p></div><div class="text-center w-1/3"><p class="mb-12">Ketua Pengurus</p>${emp.approval.head.date ? `<div class="border border-green-600 text-green-700 font-bold p-1 mb-1">DIGITALLY SIGNED<br>${new Date(emp.approval.head.date).toLocaleDateString('id-ID')}</div>` : ''}<p class="font-bold underline">( ................................. )</p></div></div><p class="text-center text-[10px] mt-6 italic">Dicetak pada ${date}</p></div>`;
     }
 
     document.addEventListener('DOMContentLoaded', renderApp);
