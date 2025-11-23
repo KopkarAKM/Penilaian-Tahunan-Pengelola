@@ -3,1110 +3,668 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kopkar AKM Career Planner</title>
+  <title>Sistem Akuntabilitas Kinerja Kopkar AKM (Job Goals 2025)</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Menggunakan font Inter dari Tailwind */
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc; /* bg-gray-50 */
-    }
-    .tab-button.active {
-      border-color: #4f46e5; /* border-indigo-500 */
-      color: #4f46e5; /* text-indigo-600 */
-    }
-    .view-content {
-      display: none;
-    }
-    .view-content.active {
-      display: block;
-    }
-    /* Style untuk Slider Input */
-    input[type=range] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 8px;
-      background: #e5e7eb; /* bg-gray-200 */
-      border-radius: 9999px;
-      outline: none;
-      opacity: 0.7;
-      transition: opacity .2s;
-    }
-    input[type=range]:hover {
-      opacity: 1;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      background: #4f46e5; /* bg-indigo-600 */
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    input[type=range]::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      background: #4f46e5; /* bg-indigo-600 */
-      border-radius: 50%;
-      cursor: pointer;
-    }
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    
+    /* UI Elements */
+    .tab-btn.active { color: #4f46e5; border-bottom: 2px solid #4f46e5; background-color: #eff6ff; }
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: #4f46e5; cursor: pointer; margin-top: -7px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #cbd5e1; border-radius: 2px; }
 
-    /* Print Styles */
+    /* Print Layout (A4 Standard) */
     @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printable-report, #printable-report * {
-        visibility: visible;
-      }
-      #printable-report {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 20px;
-        border: none !important;
-        box-shadow: none !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-      textarea {
-         border: 1px solid #ccc !important;
-         background-color: #f8f8f8 !important;
-         color: #000 !important;
-      }
-      p, h1, h2, h3, h4, th, td, span, div {
-         color: #000 !important;
-      }
-      table {
-         page-break-inside: auto;
-      }
-      tr {
-         page-break-inside: avoid;
-         page-break-after: auto;
-      }
-      thead {
-         display: table-header-group;
-      }
-      tfoot {
-         display: table-footer-group;
-      }
-      .print-table-gap-good {
-          color: #15803d !important; /* text-green-600 */
-      }
-      .print-table-gap-bad {
-          color: #b91c1c !important; /* text-red-600 */
-      }
-      .print-kpi-score {
-          border: 1px solid #bae6fd !important; /* border-blue-200 */
-          background-color: #f0f9ff !important; /* bg-blue-50 */
-      }
-      .print-kpi-score h4 {
-          color: #1e40af !important; /* text-blue-800 */
-      }
-      .print-kpi-score p {
-          color: #1d4ed8 !important; /* text-blue-700 */
-      }
+      @page { size: A4; margin: 10mm; }
+      body { background-color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      .page-break { page-break-before: always; }
+      
+      /* Typography for Print */
+      h1 { font-size: 24px !important; margin-bottom: 10px; }
+      h2 { font-size: 18px !important; margin-bottom: 20px; }
+      p, td, th { font-size: 11px !important; color: #000 !important; }
+      
+      /* Borders for Print */
+      .print-border { border: 1px solid #000 !important; }
+      .print-border-b { border-bottom: 1px solid #000 !important; }
     }
+    .print-only { display: none; }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="text-slate-800">
 
-  <!-- Header -->
-  <header class="bg-white shadow-sm no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-4">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">Kopkar AKM Career Planner</h1>
-          <p class="text-gray-600">Perencanaan Karir & Penilaian Kinerja Tahunan</p>
+  <!-- Top Navigation (No Print) -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="bg-indigo-700 text-white p-2 rounded-lg shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-slate-900 leading-tight">Kopkar AKM Career Planner</h1>
+            <p class="text-xs text-slate-500">Basis Data: Job Goals 2025 & Activity Plan</p>
+          </div>
         </div>
-        <div class="flex items-center gap-2 text-sm text-gray-500">
-          <span id="icon-user-check"></span>
-          <span>5 Pengelola Inti</span>
+        <div class="flex items-center gap-4">
+          <span class="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded border border-green-200">Tahun Buku 2025</span>
+          <div class="text-right hidden md:block">
+            <p class="text-sm font-semibold text-gray-700" id="current-date"></p>
+          </div>
+          <img src="https://ui-avatars.com/api/?name=Admin&background=4f46e5&color=fff" class="h-9 w-9 rounded-full border border-slate-300">
         </div>
       </div>
-    </div>
-  </header>
-
-  <!-- Navigation Tabs -->
-  <nav class="bg-white border-b no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex space-x-8" id="nav-tabs">
-        <button data-tab="dashboard" class="tab-button py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
-          <span id="icon-users"></span> Dashboard
-        </button>
-        <button data-tab="competency" class="tab-button py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
-          <span id="icon-target"></span> Kompetensi
-        </button>
-        <button data-tab="kpi" class="tab-button py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
-          <span id="icon-barchart"></span> KPI Tahunan
-        </button>
-        <button data-tab="career" class="tab-button py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
-          <span id="icon-trendingup"></span> Career Path
-        </button>
-        <button data-tab="report" class="tab-button py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
-          <span id="icon-filetext"></span> Laporan Tahunan
-        </button>
-      </div>
+      <!-- Tabs -->
+      <div class="flex space-x-4 overflow-x-auto" id="nav-tabs"></div>
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Dashboard View -->
-    <div id="view-dashboard" class="view-content space-y-8">
-      <!-- Overview Pengelola -->
-      <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">Overview Pengelola Inti</h2>
-        <div id="dashboard-profile-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          <!-- Profile cards will be injected here by JS -->
-        </div>
-      </div>
-      <!-- Ringkasan KPI & Proyeksi Karir -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-2xl shadow-sm p-6">
-          <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><span id="icon-barchart-2"></span> Ringkasan KPI Tahunan</h3>
-          <div id="dashboard-kpi-summary" class="space-y-4">
-            <!-- KPI summaries will be injected here by JS -->
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-sm p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><span id="icon-trendingup-2"></span> Proyeksi Karir 5 Tahun</h3>
-            <div id="dashboard-career-summary" class="space-y-4">
-                <!-- Career summaries will be injected here by JS -->
-            </div>
-            <div class="mt-6 text-sm text-gray-600">
-                <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-blue-500"></div><span>Jangka Pendek (1–2 th)</span></div>
-                <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-amber-500"></div><span>Jangka Menengah (3–5 th)</span></div>
-                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-emerald-500"></div><span>Jangka Panjang (5–10 th)</span></div>
-            </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Kompetensi View -->
-    <div id="view-competency" class="view-content space-y-6">
-      <h2 class="text-2xl font-bold text-gray-900">Matriks Kompetensi (Interaktif)</h2>
-      <div id="competency-cards-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Competency cards will be injected here by JS -->
-      </div>
-    </div>
-
-    <!-- KPI View -->
-    <div id="view-kpi" class="view-content space-y-6">
-        <h2 class="text-2xl font-bold text-gray-900">Penilaian KPI Tahunan (Interaktif)</h2>
-        <p class="text-gray-600">Gunakan tombol ✅/❌ untuk menilai. Gunakan ✏️ untuk edit, atau 🗑️ untuk hapus.</p>
-        <div id="kpi-cards-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- KPI cards will be injected here by JS -->
-        </div>
-    </div>
-
-    <!-- Career Path View -->
-    <div id="view-career" class="view-content space-y-6">
-        <h2 class="text-2xl font-bold text-gray-900">Rencana Pengembangan Karir</h2>
-        <p class="text-gray-600">Rencana karir jangka pendek, menengah, dan panjang untuk kelima pengelola inti Kopkar AKM.</p>
-        <div id="career-cards-container" class="space-y-8">
-            <!-- Career path cards will be injected here by JS -->
-        </div>
-    </div>
-
-    <!-- Report View -->
-    <div id="view-report" class="view-content space-y-6">
-      <!-- Tombol & Dropdown (Hanya Web) -->
-      <div class="no-print bg-white rounded-2xl shadow-sm p-6 flex justify-between items-center">
-          <div>
-              <h2 class="text-2xl font-bold text-gray-900">Form Laporan Tahunan</h2>
-              <p class="text-gray-600">Pilih karyawan untuk mengisi, menyetujui, dan mencetak laporan.</p>
-          </div>
-          <button id="print-button" class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700">
-              <span id="icon-printer"></span>
-              Cetak / Simpan ke PDF
-          </button>
-      </div>
-      <div class="no-print bg-white rounded-2xl shadow-sm p-6">
-          <label for="report-employee-select" class="block text-sm font-medium text-gray-700 mb-2">Pilih Karyawan</label>
-          <select id="report-employee-select" class="w-full max-w-sm p-2 border border-gray-300 rounded-lg">
-              <!-- Options will be injected by JS -->
-          </select>
-      </div>
-      
-      <!-- Kontainer untuk Konten Laporan -->
-      <div id="report-content-container">
-          <!-- Konten Laporan (Web & Print) akan dirender di sini oleh JS -->
-      </div>
-    </div>
-
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-8 min-h-screen">
+    <div id="app-content"></div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-white border-t mt-12 no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <p class="text-center text-gray-500 text-sm">
-        © <span id="footer-year"></span> Koperasi Adaro Karya Mandiri (Kopkar AKM) — Sistem Perencanaan Karir & Penilaian Kinerja
-      </p>
-    </div>
-  </footer>
-  
   <!-- Modal -->
-  <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg">
-      <div class="flex justify-between items-center p-5 border-b">
-        <h3 id="modal-title" class="text-lg font-bold text-gray-900">Modal Title</h3>
-        <button id="modal-close-button" class="text-gray-400 hover:text-gray-600">
-          <span id="icon-xclose"></span>
-        </button>
+  <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md transform scale-95 transition-transform duration-300" id="modal-panel">
+      <div class="flex justify-between items-center p-5 border-b border-slate-100">
+        <h3 class="text-lg font-bold text-slate-900" id="modal-title"></h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
       </div>
-      <div class="p-5">
-        <form id="modal-form" class="space-y-4">
-            <!-- Form content will be injected here by JS -->
-        </form>
-      </div>
+      <div class="p-6" id="modal-body"></div>
     </div>
   </div>
 
-  <script>
-    // --- ICON SVG REPO ---
-    const ICONS = {
-        users: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-        target: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
-        trendingUp: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
-        barChart: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
-        fileText: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
-        userCheck: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>',
-        checkCircle: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-        alertTriangle: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-        xCircle: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-        checkCircleSm: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-        xCircleSm: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-        pencil: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
-        trash: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
-        plusCircle: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
-        calendar: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-        chevronDown: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
-        chevronUp: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>',
-        graduationCap: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3.33 1 7 1 10 0v-5"/></svg>',
-        printer: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
-        xClose: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-        star: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
-    };
+  <!-- Print Container -->
+  <div id="print-container" class="print-only"></div>
 
-    // --- GLOBAL STATE ---
-    let state = {
-      employees: {
-        'mahmudah': {
-          id: 'mahmudah', name: 'Mahmudah Hayati, S.H.', role: 'Kepala Administrasi & Keuangan (Penanggung Jawab Unit Adamart)', photo: 'https://placehold.co/120x120/4f46e5/white?text=MH',
-          competencies: [ { name: 'Keuangan & Administrasi', current: 4, target: 5 }, { name: 'Manajemen SDM & Hubungan Industrial', current: 4, target: 5 }, { name: 'Manajemen Proyek Adamart', current: 4, target: 5 } ],
-          training: ['Pelatihan Manajemen Keuangan Lanjutan', 'Sertifikasi Manajemen SDM & Kepemimpinan', 'Workshop Inovasi Ritel (Adamart)'],
-          kpis: [ { name: 'Ketepatan pelaporan keuangan bulanan', target: '100% laporan tepat waktu', status: null }, { name: 'Efisiensi anggaran administrasi Adamart', target: 'Pengurangan biaya 5% dibanding tahun sebelumnya', status: null }, { name: 'Kepuasan anggota (layanan administrasi)', target: 'Skor ≥ 90%', status: null }, { name: 'Kepatuhan regulasi dan audit internal', target: '0 temuan audit', status: null } ],
-          careerPath: { short: ['Pelatihan Leadership & Strategic Planning', 'Manajemen Keuangan tingkat lanjut', 'Mimpin proyek ERP/digitalisasi', 'Mentor bagi staf junior (e.g., Yuliani)'], mid: ['Promosi → Manajer Umum (General Manager)', 'Executive Leadership Program / Magister Manajemen (paruh waktu)', 'Latih kader penerus (Sri/Yuliani)', 'Aktif di forum koperasi regional/nasional'], long: ['Penasihat utama Badan Pengurus', 'Konsolidasi & inovasi unit usaha', 'Mentor formal program onboarding', 'Regenerasi kepemimpinan & transfer knowledge'] },
-          annualReview: "", developmentPotential: "", approval: { manager: { approved: false, date: null }, head: { approved: false, date: null } }
+  <script>
+    // --- DATA SUMBER (DATA SOURCE) ---
+    
+    const initialEmployees = {
+      'mahmudah': {
+        id: 'mahmudah', name: 'Mahmudah Hayati, S.H.', role: 'Kabag Administrasi & Keuangan',
+        photo: 'https://ui-avatars.com/api/?name=Mahmudah+Hayati&background=e0e7ff&color=4f46e5',
+        competencies: [
+          { name: 'Manajemen Keuangan & Anggaran', ref: 'SOP/KEU/04', current: 4, target: 5 },
+          { name: 'Manajemen SDM & Hubungan Industrial', ref: 'SOP/ADM/01-18', current: 4, target: 5 },
+          { name: 'Pengendalian Internal & Audit', ref: 'Portofolio Manager', current: 3, target: 5 },
+          { name: 'Perencanaan Strategis Bisnis', ref: 'Renstra 2025', current: 4, target: 5 }
+        ],
+        kpis: [
+          { name: 'Total Pendapatan Koperasi', target: 'Rp 2,574 Miliar (Job Goal 1)', status: null, reason: '' },
+          { name: 'Efisiensi Keuangan (Penghematan)', target: 'Rp 185 Juta (Job Goal 2)', status: null, reason: '' },
+          { name: 'Kepuasan Anggota', target: 'Min. 90% (Job Goal 3)', status: null, reason: '' },
+          { name: 'Laporan Keuangan Bulanan', target: 'Tepat Waktu (Activity Plan)', status: null, reason: '' }
+        ],
+        careerPath: {
+          short: ['Sertifikasi Kompetensi Manajer Koperasi (BNSP)', 'Pelatihan Analisis Laporan Keuangan Lanjutan'],
+          mid: ['General Manager Koperasi', 'Magister Manajemen (MM)'],
+          long: ['Konsultan Koperasi / Pengurus Inti', 'Auditor Internal Senior']
         },
-        'ernest': {
-          id: 'ernest', name: 'Ernest Kalula, S.Pd.', role: 'Kepala Operasional', photo: 'https://placehold.co/120x120/059669/white?text=EK',
-          competencies: [ { name: 'Kepemimpinan Operasional & K3LH', current: 4, target: 5 }, { name: 'Pengembangan SOP & Audit SMKP', current: 4, target: 5 }, { name: 'Komunikasi Tim & Negosiasi', current: 4, target: 5 } ],
-          training: ['Sertifikasi Ahli K3 (AK3 Umum)', 'Pelatihan Kepemimpinan Operasional', 'Workshop Lean Management atau Six Sigma'],
-          kpis: [ { name: 'Kepatuhan terhadap standar K3LH', target: 'Hasil audit minimal “Memuaskan”', status: null }, { name: 'Jumlah kecelakaan kerja (LTI)', target: '0 kasus LTI', status: null }, { name: 'Penyelesaian laporan operasional bulanan', target: '100% laporan selesai tepat waktu', status: null }, { name: 'Pengembangan SOP/efisiensi operasional', target: 'Minimal 2 SOP diperbaharui', status: null } ],
-          careerPath: { short: ['Manajemen Operasional Lanjutan / Project Management', 'Manajemen Bisnis Koperasi', 'Sertifikasi Pengawas Operasional Madya', 'Rotasi terbatas (Adamart/Travel)'], mid: ['Promosi → Manajer Operasional / Koordinator Operasi', 'Leadership for Managers / Negotiation Training', 'Pelatih internal SOP & safety', 'Membina budaya K3 & pelayanan prima'], long: ['Wakil Manajer Umum bidang Operasional / GM', 'Implementasi teknologi (tracking armada, booking online)', 'Mentoring manajer muda', 'Perumus strategi ekspansi usaha jasa'] },
-          annualReview: "", developmentPotential: "", approval: { manager: { approved: false, date: null }, head: { approved: false, date: null } }
+        review: "", potential: "",
+        approval: { manager: {date: null}, head: {date: null} }
+      },
+      'ernest': {
+        id: 'ernest', name: 'Ernest Kalula, S.Pd.', role: 'Kepala Operasional',
+        photo: 'https://ui-avatars.com/api/?name=Ernest+Kalula&background=dcfce7&color=166534',
+        competencies: [
+          { name: 'Kepemimpinan Operasional & K3LH', ref: 'Renstra (K3LH)', current: 4, target: 5 },
+          { name: 'Manajemen Aset & Logistik', ref: 'SOP Aset', current: 4, target: 5 },
+          { name: 'Perencanaan Anggaran Operasional', ref: 'Activity Plan Ops', current: 3, target: 5 },
+          { name: 'Negosiasi Vendor & Mitra', ref: 'Materi Negosiasi', current: 4, target: 5 }
+        ],
+        kpis: [
+          { name: 'Efisiensi Biaya Operasional', target: 'Hemat Rp 155 Juta (Job Goal 1)', status: null, reason: '' },
+          { name: 'Biaya Perbaikan Kendaraan', target: 'Max Rp 9,5 Juta (Activity Plan)', status: null, reason: '' },
+          { name: 'Biaya BBM', target: 'Max Rp 19,2 Juta (Activity Plan)', status: null, reason: '' },
+          { name: 'Zero Accident', target: '0 Kasus (Job Goal)', status: null, reason: '' }
+        ],
+        careerPath: {
+          short: ['Sertifikasi POP (Pengawas Operasional)', 'Manajemen Risiko Dasar'],
+          mid: ['Manajer Operasional & Bisnis', 'Assesor Kompetensi Teknis'],
+          long: ['Direktur Operasional', 'Wirausahawan Mitra Koperasi']
         },
-        'yuliani': {
-          id: 'yuliani', name: 'Yuliani', role: 'Staf Keuangan', photo: 'https://placehold.co/120x120/ec4899/white?text=YU',
-          competencies: [ { name: 'Pengelolaan Kas & Laporan Keuangan', current: 3, target: 4 }, { name: 'Administrasi Perpajakan & Pelaporan', current: 3, target: 4 }, { name: 'Keterampilan MS Office', current: 3, target: 4 } ],
-          training: ['Pelatihan Brevet Pajak A/B', 'Kursus Sistem ERP Keuangan (SAP/Accounting Software)', 'Pelatihan English for Business (Keuangan)'],
-          kpis: [ { name: 'Ketepatan laporan keuangan bulanan', target: '100% tepat waktu', status: null }, { name: 'Ketepatan pelaporan SPT Masa pajak', target: '100% tepat waktu', status: null }, { name: 'Akurasi pembukuan (kesalahan ≤5%)', target: '≤5% kesalahan (temuan audit)', status: null }, { name: 'Pengembangan diri (pelatihan keuangan)', target: '≥2 pelatihan keuangan/tahun', status: null } ],
-          careerPath: { short: ['Brevet Pajak A&B', 'Analisis Laporan Keuangan & Budgeting', 'Penyusunan laporan SAK ETAP', 'Koordinator proyek efisiensi (e.g., pembayaran digital)'], mid: ['Promosi → Supervisor/Koordinator Keuangan', 'Leadership Dasar / Supervisory Skills', 'Rotasi ke Unit Simpan Pinjam atau Adamart', 'Mentor staf baru (buddy system)'], long: ['Kepala Keuangan/Administrasi', 'CPMA / Pascasarjana Manajemen Keuangan', 'Partner strategis GM dalam keputusan investasi', 'Mentor utama staf keuangan & pelatihan internal'] },
-          annualReview: "", developmentPotential: "", approval: { manager: { approved: false, date: null }, head: { approved: false, date: null } }
+        review: "", potential: "",
+        approval: { manager: {date: null}, head: {date: null} }
+      },
+      'sri': {
+        id: 'sri', name: 'Sri Mulyani, S.AB.', role: 'Ka. Unit Simpan Pinjam',
+        photo: 'https://ui-avatars.com/api/?name=Sri+Mulyani&background=ffedd5&color=c2410c',
+        competencies: [
+          { name: 'Analisis Kelayakan Kredit (5C)', ref: 'SOP/USH/01', current: 4, target: 5 },
+          { name: 'Manajemen Risiko Kredit', ref: 'SOP/USH/05', current: 4, target: 5 },
+          { name: 'Pengelolaan Portofolio Dana', ref: 'Job Goal USP', current: 4, target: 5 },
+          { name: 'Administrasi Akad & Jaminan', ref: 'SOP/USH/02', current: 4, target: 5 }
+        ],
+        kpis: [
+          { name: 'Rasio Gagal Bayar (NPL)', target: '0% (Job Goal 1)', status: null, reason: '' },
+          { name: 'Financial Productivity Total', target: 'Rp 1,913 Miliar (Job Goal 2)', status: null, reason: '' },
+          { name: 'Pendapatan Jasa USP', target: 'Rp 1,556 Miliar (Breakdown)', status: null, reason: '' },
+          { name: 'Pendapatan Pinjaman Konsumtif', target: 'Rp 241 Juta (Breakdown)', status: null, reason: '' }
+        ],
+        careerPath: {
+          short: ['Sertifikasi Penilaian Aset/Jaminan', 'Manajemen Risiko Perbankan/Koperasi'],
+          mid: ['Manajer Bisnis & Dana', 'Dewan Pengawas Syariah (Umroh)'],
+          long: ['Konsultan Keuangan Mikro', 'Pimpinan Cabang']
         },
-        'sri': {
-          id: 'sri', name: 'Sri Mulyani, S.AB.', role: 'Kepala Unit Simpan Pinjam', photo: 'https://placehold.co/120x120/ea580c/white?text=SM',
-          competencies: [ { name: 'Pengelolaan Unit Simpan Pinjam', current: 4, target: 5 }, { name: 'Penyusunan Laporan Keuangan & Pajak Koperasi', current: 4, target: 5 }, { name: 'Kepemimpinan & Manajemen Koperasi', current: 4, target: 5 } ],
-          training: ['Sertifikasi Manajemen Koperasi / Brevet Pajak Lanjutan', 'Pelatihan Kepemimpinan & Strategi Koperasi', 'Workshop Perencanaan Keuangan Koperasi'],
-          kpis: [ { name: 'Pertumbuhan total simpanan anggota', target: 'Naik +5% dari tahun sebelumnya', status: null }, { name: 'Rasio NPL pada pinjaman', target: 'NPL ≤ 5%', status: null }, { name: 'Kepatuhan pelaporan keuangan koperasi (SAK) dan pajak', target: '100% audit SAK-EPAK memuaskan', status: null }, { name: 'Pengembangan produk SP atau edukasi anggota', target: '1 produk baru atau 80% anggota ikut edukasi', status: null } ],
-          careerPath: { short: ['Leadership Management untuk manajer unit', 'Workshop Pengembangan Produk Simpan Pinjam digital', 'Mimpin proyek pembiayaan Haji/Umroh', 'Mentor teknis staf akuntansi junior'], mid: ['Promosi → Manajer Keuangan / Kepala Administrasi & Keuangan', 'Sertifikasi Manajemen Risiko Keuangan', 'Mini-MBA / Executive Development', 'Rotasi sementara ke Adamart'], long: ['Jalur Eksekutif: General Manager', 'Jalur Spesialis: CFO / Konsultan Ahli', 'Aktif di asosiasi koperasi nasional', 'Coaching & succession planning'] },
-          annualReview: "", developmentPotential: "", approval: { manager: { approved: false, date: null }, head: { approved: false, date: null } }
+        review: "", potential: "",
+        approval: { manager: {date: null}, head: {date: null} }
+      },
+      'yuliani': {
+        id: 'yuliani', name: 'Yuliani', role: 'Staf Keuangan',
+        photo: 'https://ui-avatars.com/api/?name=Yuliani&background=fce7f3&color=db2777',
+        competencies: [
+          { name: 'Sistem Akuntansi & Jurnal', ref: 'SOP/KEU/04', current: 3, target: 4 },
+          { name: 'Manajemen Kas Harian', ref: 'SOP Transaksi Tunai', current: 3, target: 4 },
+          { name: 'Administrasi Perpajakan', ref: 'Activity Plan Tax', current: 3, target: 4 },
+          { name: 'Rekonsiliasi Bank', ref: 'SOP/KEU/01', current: 3, target: 4 }
+        ],
+        kpis: [
+          { name: 'Laporan Keuangan Bulanan', target: 'Tgl 10 (Job Goal Admin)', status: null, reason: '' },
+          { name: 'Biaya ATK', target: 'Max Rp 3 Juta (Activity Plan)', status: null, reason: '' },
+          { name: 'Biaya Internet & Telpon', target: 'Max Rp 7,2 Juta (Activity Plan)', status: null, reason: '' },
+          { name: 'Selisih Kas (Cash Opname)', target: 'Nihil (Rp 0)', status: null, reason: '' }
+        ],
+        careerPath: {
+          short: ['Kursus Pajak Brevet A&B', 'Pelatihan Software Akuntansi (Accurate/Zahir)'],
+          mid: ['Supervisor Keuangan', 'S1 Akuntansi Lanjutan'],
+          long: ['Manajer Keuangan']
         },
-        'zahrah': {
-          id: 'zahrah', name: 'Zahrah Annisa, S.E.', role: 'Kepala Unit Kopkarindo Travel', photo: 'https://placehold.co/120x120/7c3aed/white?text=ZA',
-          competencies: [ { name: 'Layanan Pelanggan & Komunikasi', current: 2, target: 4 }, { name: 'Perencanaan & Operasional Perjalanan (Travel)', current: 2, target: 4 }, { name: 'Pemasaran Dasar Pariwisata', current: 2, target: 4 } ],
-          training: ['Kursus Agen Perjalanan & Perhotelan', 'Pelatihan Customer Service & Etika Bisnis', 'Kursus Bahasa Inggris Bisnis untuk Pariwisata'],
-          kpis: [ { name: 'Peningkatan omzet unit travel', target: 'Naik +10% dari tahun sebelumnya', status: null }, { name: 'Jumlah pelanggan/paket wisata terjual', target: '≥100 pelanggan/tiket penjualan', status: null }, { name: 'Tingkat kepuasan pelanggan layanan travel', target: 'Skor ≥ 4,5/5', status: null }, { name: 'Pelatihan dan sertifikasi layanan pariwisata', target: '100% pelatihan/sertifikasi terkait', status: null } ],
-          careerPath: { short: ['Manajemen Biro Perjalanan Wisata bersertifikat', 'Customer Service Excellence & Digital Marketing', 'Mentoring dari Mahmudah/Ernest', 'SOP layanan travel & program promosi bundling'], mid: ['Rotasi ke Unit Adamart (6–12 bulan)', 'Promosi → Koordinator Layanan Anggota', 'Manajemen Operasi Ritel & Business Development', 'Pembina magang & tim proyek strategis'], long: ['Manajer Operasional & Pengembangan Usaha', 'Ikut seminar inovasi koperasi & tren pariwisata/ritel', 'Networking mitra (maskapai, supplier)', 'Suksesor GM (Sekretaris Manajemen / Tim Strategi)'] },
-          annualReview: "", developmentPotential: "", approval: { manager: { approved: false, date: null }, head: { approved: false, date: null } }
-        }
+        review: "", potential: "",
+        approval: { manager: {date: null}, head: {date: null} }
+      },
+      'zahrah': {
+        id: 'zahrah', name: 'Zahrah Annisa, S.E.', role: 'Ka. Unit Travel & Wisata',
+        photo: 'https://ui-avatars.com/api/?name=Zahrah+Annisa&background=f3e8ff&color=7c3aed',
+        competencies: [
+          { name: 'Perencanaan Paket Wisata', ref: 'Job Goal Travel', current: 2, target: 4 },
+          { name: 'Pemasaran Digital', ref: 'Activity Plan Mkt', current: 3, target: 4 },
+          { name: 'Kerjasama Mitra (Umroh/Wisata)', ref: 'Job Goal 2', current: 2, target: 4 },
+          { name: 'Layanan Pelanggan', ref: 'Renstra Customer', current: 3, target: 4 }
+        ],
+        kpis: [
+          { name: 'Financial Productivity Travel', target: 'Rp 209,8 Juta (Job Goal 1)', status: null, reason: '' },
+          { name: 'Pendapatan Tiket Anggota', target: 'Rp 126,2 Juta (Breakdown)', status: null, reason: '' },
+          { name: 'Selisih Penjualan Tiket Umum', target: 'Rp 77,6 Juta (Breakdown)', status: null, reason: '' },
+          { name: 'Pengembangan Mitra Baru', target: '3 Mitra (Job Goal 2)', status: null, reason: '' }
+        ],
+        careerPath: {
+          short: ['Sertifikasi Tour Leader / Guiding', 'Digital Marketing Specialist'],
+          mid: ['Manajer Pengembangan Bisnis', 'Sertifikasi IATA'],
+          long: ['Direktur Bisnis Pariwisata', 'Konsultan Travel']
+        },
+        review: "", potential: "",
+        approval: { manager: {date: null}, head: {date: null} }
       }
     };
-    let activeTab = 'dashboard';
-    let selectedEmployeeId = 'mahmudah';
-    let expandedPaths = {};
-    let modal = { isOpen: false, type: null, empId: null, data: null };
 
-    // --- HELPER FUNCTIONS ---
-    function getKpiStatusCount(empId) {
-        const list = state.employees[empId].kpis;
-        const achieved = list.filter(k => k.status === true).length;
-        const missed = list.filter(k => k.status === false).length;
-        const pending = list.filter(k => k.status === null).length;
-        return { achieved, missed, pending, total: list.length };
+    // --- STATE & LOGIC ---
+    let state = {
+      employees: JSON.parse(localStorage.getItem('kopkarDB_Final_V4')) || initialEmployees,
+      activeTab: 'report',
+      selectedEmpId: 'sri',
+      isModalOpen: false,
+      modalConfig: null
+    };
+
+    const saveState = () => {
+      localStorage.setItem('kopkarDB_Final_V4', JSON.stringify(state.employees));
+      renderApp();
+    };
+
+    // --- RENDERER ---
+    function renderTabs() {
+      const tabs = [
+        { id: 'dashboard', label: 'Dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
+        { id: 'competency', label: 'Kompetensi (SOP)', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+        { id: 'kpi', label: 'KPI (Renstra)', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+        { id: 'career', label: 'Career Path', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
+        { id: 'report', label: 'Laporan Akuntabilitas', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' }
+      ];
+      const navTabs = document.getElementById('nav-tabs');
+      if(navTabs) {
+        navTabs.innerHTML = tabs.map(t => `
+          <button onclick="setTab('${t.id}')" class="tab-btn flex items-center gap-2 px-4 py-3 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors whitespace-nowrap ${state.activeTab === t.id ? 'active' : ''}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${t.icon}"/></svg> ${t.label}
+          </button>`).join('');
+      }
     }
 
-    // --- RENDER FUNCTIONS ---
-
-    // Render Main App (Nav, Tabs, Content)
     function renderApp() {
-        // Render Icons
-        document.getElementById('icon-user-check').innerHTML = ICONS.userCheck;
-        document.getElementById('icon-users').innerHTML = ICONS.users;
-        document.getElementById('icon-target').innerHTML = ICONS.target;
-        document.getElementById('icon-barchart').innerHTML = ICONS.barChart;
-        document.getElementById('icon-trendingup').innerHTML = ICONS.trendingUp;
-        document.getElementById('icon-filetext').innerHTML = ICONS.fileText;
-        document.getElementById('icon-barchart-2').innerHTML = ICONS.barChart;
-        document.getElementById('icon-trendingup-2').innerHTML = ICONS.trendingUp;
-        document.getElementById('icon-printer').innerHTML = ICONS.printer;
-        document.getElementById('icon-xclose').innerHTML = ICONS.xClose;
-        
-        // Set Footer Year
-        document.getElementById('footer-year').textContent = new Date().getFullYear();
-        
-        // Render Tab Navigation
-        document.querySelectorAll('.tab-button').forEach(button => {
-            if (button.dataset.tab === activeTab) {
-                button.classList.add('active', 'border-indigo-500', 'text-indigo-600');
-                button.classList.remove('border-transparent', 'text-gray-500');
-            } else {
-                button.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
-                button.classList.add('border-transparent', 'text-gray-500');
-            }
-        });
-
-        // Render Active View
-        document.querySelectorAll('.view-content').forEach(view => {
-            if (view.id === `view-${activeTab}`) {
-                view.classList.add('active');
-            } else {
-                view.classList.remove('active');
-            }
-        });
-
-        // Render content for the active view
-        switch (activeTab) {
-            case 'dashboard':
-                renderDashboardView();
-                break;
-            case 'competency':
-                renderCompetencyView();
-                break;
-            case 'kpi':
-                renderKpiView();
-                break;
-            case 'career':
-                renderCareerView();
-                break;
-            case 'report':
-                renderReportView();
-                break;
-        }
+      renderTabs();
+      const content = document.getElementById('app-content');
+      if (!content) return;
+      
+      if (state.activeTab === 'dashboard') renderDashboard(content);
+      else if (state.activeTab === 'competency') renderCompetency(content);
+      else if (state.activeTab === 'kpi') renderKPI(content);
+      else if (state.activeTab === 'career') renderCareer(content);
+      else if (state.activeTab === 'report') renderReport(content);
     }
 
-    // Render Dashboard
-    function renderDashboardView() {
-        const profileContainer = document.getElementById('dashboard-profile-cards');
-        const kpiSummaryContainer = document.getElementById('dashboard-kpi-summary');
-        const careerSummaryContainer = document.getElementById('dashboard-career-summary');
-        
-        profileContainer.innerHTML = '';
-        kpiSummaryContainer.innerHTML = '';
-        careerSummaryContainer.innerHTML = '';
-
-        Object.values(state.employees).forEach(emp => {
-            const { achieved, total } = getKpiStatusCount(emp.id);
-            const isActive = emp.id === selectedEmployeeId;
-            
-            // Render Profile Card
-            profileContainer.innerHTML += `
-                <div class="profile-card p-5 rounded-2xl border transition-all duration-300 cursor-pointer hover:shadow-lg ${isActive ? 'bg-indigo-50 border-indigo-500 ring-2 ring-indigo-200' : 'bg-white border-gray-200 hover:border-indigo-300'}" data-emp-id="${emp.id}">
-                    <div class="flex items-center gap-4">
-                        <img src="${emp.photo}" alt="${emp.name}" class="w-16 h-16 rounded-full object-cover">
-                        <div class="flex-1">
-                            <h3 class="font-bold text-gray-900 text-lg">${emp.name}</h3>
-                            <p class="text-sm text-gray-600 mt-1">${emp.role}</p>
-                            <div class="mt-2 flex items-center gap-2">
-                                <div class="flex items-center text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                                    ${ICONS.checkCircle} <span class="ml-1">${achieved}/${total} KPI</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-                
-            // Render KPI Summary
-            const { achieved: kpiAch, missed, pending, total: kpiTotal } = getKpiStatusCount(emp.id);
-            const achievedWidth = kpiTotal > 0 ? (kpiAch / kpiTotal) * 100 : 0;
-            kpiSummaryContainer.innerHTML += `
-                <div class="border rounded-lg p-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <h4 class="font-medium">${emp.name.split(' ')[0]}</h4>
-                        <span class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">${kpiAch}/${kpiTotal}</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-2.5 rounded-full" style="width: ${achievedWidth}%"></div>
-                    </div>
-                    <div class="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>${kpiAch} tercapai</span>
-                        <span>${missed} gagal</span>
-                        <span>${pending} belum dinilai</span>
-                    </div>
-                </div>`;
-                
-            // Render Career Summary
-            careerSummaryContainer.innerHTML += `
-                <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-                    <div class="flex items-center gap-3">
-                        <img src="${emp.photo}" alt="${emp.name}" class="w-10 h-10 rounded-full">
-                        <span class="font-medium">${emp.name.split(' ')[0]}</span>
-                    </div>
-                    <div class="flex items-center gap-1" title="Biru: Pendek, Kuning: Menengah, Hijau: Panjang">
-                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-amber-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                    </div>
-                </div>`;
-        });
-    }
-
-    // Render Competency Page
-    function renderCompetencyView() {
-        const container = document.getElementById('competency-cards-container');
-        container.innerHTML = '';
-        Object.values(state.employees).forEach(emp => {
-            container.innerHTML += `
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                    <div class="p-5 border-b">
-                        <div class="flex items-center gap-4">
-                            <img src="${emp.photo}" alt="${emp.name}" class="w-14 h-14 rounded-full">
-                            <div>
-                                <h3 class="font-bold text-lg">${emp.name.split(' ')[0]}</h3>
-                                <p class="text-gray-600">${emp.role}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">${ICONS.target} Kompetensi Inti</h4>
-                        <div class="space-y-2 mb-4" id="competency-list-${emp.id}">
-                            ${emp.competencies.map((comp, idx) => renderCompetencyBar(comp, emp.id, idx)).join('')}
-                        </div>
-                        <button class="add-competency-btn w-full flex items-center justify-center gap-2 p-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 hover:border-gray-400 transition-colors" data-emp-id="${emp.id}">
-                            ${ICONS.plusCircle} Tambah Kompetensi Baru
-                        </button>
-                        <h4 class="font-bold text-gray-800 mt-6 mb-3 flex items-center gap-2">${ICONS.graduationCap} Rencana Pelatihan</h4>
-                        <ul class="space-y-2">
-                            ${emp.training.map(item => `<li class="flex items-start gap-2"><span class="text-indigo-500 mt-0.5">${ICONS.checkCircle}</span><span class="text-gray-700">${item}</span></li>`).join('')}
-                        </ul>
-                    </div>
-                </div>`;
-        });
-    }
-
-    // Render KPI Page
-    function renderKpiView() {
-        const container = document.getElementById('kpi-cards-container');
-        container.innerHTML = '';
-        Object.values(state.employees).forEach(emp => {
-            container.innerHTML += `
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                    <div class="p-5 border-b bg-gray-50">
-                        <div class="flex items-center gap-4">
-                            <img src="${emp.photo}" alt="${emp.name}" class="w-14 h-14 rounded-full">
-                            <div>
-                                <h3 class="font-bold text-lg">${emp.name.split(' ')[0]}</h3>
-                                <p class="text-gray-600">${emp.role}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">${ICONS.barChart} KPI Utama</h4>
-                        <div class="space-y-3 mb-4" id="kpi-list-${emp.id}">
-                            ${emp.kpis.map((kpi, idx) => renderKpiItem(kpi, emp.id, idx)).join('')}
-                        </div>
-                        <button class="add-kpi-btn w-full flex items-center justify-center gap-2 p-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 hover:border-gray-400 transition-colors" data-emp-id="${emp.id}">
-                            ${ICONS.plusCircle} Tambah KPI Baru
-                        </button>
-                    </div>
-                </div>`;
-        });
-    }
-
-    // Render Career Path Page
-    function renderCareerView() {
-        const container = document.getElementById('career-cards-container');
-        container.innerHTML = '';
-        Object.values(state.employees).forEach(emp => {
-            container.innerHTML += `
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                    <div class="p-6 border-b">
-                        <div class="flex items-center gap-4">
-                            <img src="${emp.photo}" alt="${emp.name}" class="w-16 h-16 rounded-full">
-                            <div>
-                                <h3 class="font-bold text-xl">${emp.name}</h3>
-                                <p class="text-gray-600">${emp.role}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        ${renderCareerPathSection('🎯 Jangka Pendek (1–2 tahun)', emp.careerPath.short, emp.id, 'short')}
-                        ${renderCareerPathSection('🚀 Jangka Menengah (3–5 tahun)', emp.careerPath.mid, emp.id, 'mid')}
-                        ${renderCareerPathSection('🌟 Jangka Panjang (5–10 tahun)', emp.careerPath.long, emp.id, 'long')}
-                    </div>
-                </div>`;
-        });
-    }
-
-    // Render Report Page
-    function renderReportView() {
-        const select = document.getElementById('report-employee-select');
-        const container = document.getElementById('report-content-container');
-        
-        // Populate select dropdown
-        if (select.options.length === 0) {
-            Object.values(state.employees).forEach(emp => {
-                const option = new Option(emp.name, emp.id);
-                select.add(option);
-            });
-        }
-        select.value = selectedEmployeeId;
-        
-        const emp = state.employees[selectedEmployeeId];
-        container.innerHTML = `
-            <!-- [BARU] Kotak Ringkasan Kinerja untuk Konteks -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 no-print">
-              ${renderReportSummaryView(emp)}
-            </div>
-
-            <!-- Form Interaktif -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 no-print mt-6">
-                 <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Isi Laporan Kinerja: ${emp.name}</h3>
-                 <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Penjelasan Target Tahunan (Review)</label>
-                    <p class="text-xs text-gray-500 mb-1">Gunakan ringkasan di atas sebagai referensi untuk menulis review pencapaian.</p>
-                    <textarea
-                        id="report-annual-review"
-                        class="w-full p-3 border border-gray-300 rounded-lg min-h-[150px] text-sm"
-                        placeholder="Tuliskan review pencapaian target tahunan di sini..."
-                        data-emp-id="${emp.id}"
-                    >${emp.annualReview}</textarea>
-                </div>
+    // 1. DASHBOARD
+    function renderDashboard(el) {
+      const emps = Object.values(state.employees);
+      el.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-slate-500 text-sm font-medium uppercase">Total Karyawan Inti</h3>
+            <p class="text-3xl font-bold text-slate-900 mt-2">${emps.length} <span class="text-sm font-normal text-slate-500">Orang</span></p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-slate-500 text-sm font-medium uppercase">Kesiapan Laporan</h3>
+            <p class="text-3xl font-bold text-emerald-600 mt-2">${emps.filter(e => e.approval.manager.date).length} <span class="text-sm font-normal text-slate-500">Disetujui Manajer</span></p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-slate-500 text-sm font-medium uppercase">Basis Data</h3>
+            <p class="text-lg font-bold text-indigo-600 mt-2">Job Goals 2025 & Activity Plan</p>
+          </div>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Status Kinerja Tim</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${emps.map(e => {
+            const kpiOk = e.kpis.filter(k => k.status === true).length;
+            const pct = Math.round((kpiOk / e.kpis.length) * 100);
+            return `
+            <div onclick="setTab('report', '${e.id}')" class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-400 cursor-pointer transition-all group">
+              <div class="flex items-center gap-4 mb-4">
+                <img src="${e.photo}" class="w-12 h-12 rounded-full bg-slate-100">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Potensi Pengembangan Diri</label>
-                    <p class="text-xs text-gray-500 mb-1">Gunakan ringkasan 'Gap' kompetensi di atas untuk menentukan rencana pengembangan.</p>
-                    <textarea
-                        id="report-development-potential"
-                        class="w-full p-3 border border-gray-300 rounded-lg min-h-[150px] text-sm"
-                        placeholder="Tuliskan area potensi pengembangan diri dan rencana tindak lanjut..."
-                        data-emp-id="${emp.id}"
-                    >${emp.developmentPotential}</textarea>
+                  <h4 class="font-bold text-slate-900 group-hover:text-indigo-600">${e.name}</h4>
+                  <p class="text-xs text-slate-500">${e.role}</p>
                 </div>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 mb-2">
+                <div class="bg-indigo-600 h-2 rounded-full" style="width: ${pct}%"></div>
+              </div>
+              <div class="flex justify-between text-xs text-slate-500">
+                <span>KPI: ${pct}% Tercapai</span>
+                <span>${e.kpis.length} Indikator</span>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
+
+    // 2. COMPETENCY (SOP BASED)
+    function renderCompetency(el) {
+      el.innerHTML = `
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">Matriks Kompetensi (Berbasis SOP & Portofolio)</h2>
+        <button onclick="openModal('GUIDE', null)" class="bg-amber-100 text-amber-800 px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-200 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Panduan Penilaian
+        </button>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        ${Object.values(state.employees).map(e => `
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex justify-between items-start mb-6">
+              <div class="flex items-center gap-3">
+                <img src="${e.photo}" class="w-10 h-10 rounded-full">
+                <div>
+                  <h3 class="font-bold text-slate-900">${e.name}</h3>
+                  <p class="text-xs text-slate-500">${e.role}</p>
+                </div>
+              </div>
+              <button onclick="openModal('ADD_COMP', '${e.id}')" class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1 rounded hover:bg-indigo-100 font-medium">+ Tambah</button>
             </div>
-            
-            <!-- Kotak Approval Interaktif -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 no-print mt-6">
-              <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Persetujuan Laporan</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                ${renderApprovalBox('Manajer Koperasi', emp.approval.manager, emp.id, 'manager')}
-                ${renderApprovalBox('Ketua Koperasi', emp.approval.head, emp.id, 'head')}
+            <div class="space-y-5">
+              ${e.competencies.map((c, idx) => `
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="font-medium text-slate-700 w-2/3 truncate" title="${c.name}">${c.name}</span>
+                    <span class="font-bold text-indigo-600">${c.current}/5</span>
+                  </div>
+                  <div class="flex justify-between text-xs text-slate-400 mb-1 italic">
+                    <span>Ref: ${c.ref || 'General'}</span>
+                    <button onclick="deleteItem('competencies', '${e.id}', ${idx})" class="text-red-400 hover:text-red-600 not-italic">Hapus</button>
+                  </div>
+                  <input type="range" min="1" max="5" value="${c.current}" oninput="updateScore('${e.id}', 'competencies', ${idx}, this.value)">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+    }
+
+    // 3. KPI (RENSTRA BASED)
+    function renderKPI(el) {
+      el.innerHTML = `<h2 class="text-xl font-bold mb-6">KPI Tahunan (Job Goals & Activity Plan 2025)</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        ${Object.values(state.employees).map(e => `
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex justify-between items-start mb-6">
+              <div class="flex items-center gap-3">
+                <img src="${e.photo}" class="w-10 h-10 rounded-full">
+                <div>
+                  <h3 class="font-bold text-slate-900">${e.name}</h3>
+                  <p class="text-xs text-slate-500">${e.role}</p>
+                </div>
+              </div>
+              <button onclick="openModal('ADD_KPI', '${e.id}')" class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1 rounded hover:bg-indigo-100 font-medium">+ Tambah</button>
+            </div>
+            <div class="space-y-3">
+              ${e.kpis.map((k, idx) => `
+                <div class="p-3 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-800">${k.name}</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Target: ${k.target}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="updateKpiStatus('${e.id}', ${idx}, true)" class="p-1.5 rounded ${k.status === true ? 'bg-green-100 text-green-700' : 'text-slate-300 hover:bg-slate-100'}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
+                        <button onclick="updateKpiStatus('${e.id}', ${idx}, false)" class="p-1.5 rounded ${k.status === false ? 'bg-red-100 text-red-700' : 'text-slate-300 hover:bg-slate-100'}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                        <button onclick="deleteItem('kpis', '${e.id}', ${idx})" class="text-slate-300 hover:text-red-500 ml-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+                    </div>
+                  </div>
+                  ${k.status === false && k.reason ? `<div class="mt-2 p-2 bg-red-50 border border-red-100 rounded text-xs text-red-700"><strong>Kendala:</strong> ${k.reason}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+    }
+
+    // 4. CAREER PATH
+    function renderCareer(el) {
+      el.innerHTML = `<h2 class="text-xl font-bold mb-6">Rencana Karir (Akuntabel)</h2>
+      <div class="space-y-6">
+        ${Object.values(state.employees).map(e => `
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-3">
+              <img src="${e.photo}" class="w-8 h-8 rounded-full"> ${e.name}
+            </h3>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <div class="text-xs font-bold text-blue-700 uppercase mb-2 tracking-wider">Jangka Pendek (1-2 Th)</div>
+                <ul class="text-sm text-slate-700 list-disc pl-4 space-y-1">${e.careerPath.short.map(i=>`<li>${i}</li>`).join('')}</ul>
+              </div>
+              <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                <div class="text-xs font-bold text-amber-700 uppercase mb-2 tracking-wider">Jangka Menengah (3-5 Th)</div>
+                <ul class="text-sm text-slate-700 list-disc pl-4 space-y-1">${e.careerPath.mid.map(i=>`<li>${i}</li>`).join('')}</ul>
+              </div>
+              <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
+                <div class="text-xs font-bold text-emerald-700 uppercase mb-2 tracking-wider">Jangka Panjang (5+ Th)</div>
+                <ul class="text-sm text-slate-700 list-disc pl-4 space-y-1">${e.careerPath.long.map(i=>`<li>${i}</li>`).join('')}</ul>
               </div>
             </div>
+          </div>
+        `).join('')}
+      </div>`;
+    }
 
-            <!-- Komponen Laporan untuk di-print (tersembunyi saat tidak print) -->
-            <div class="hidden print:block">
-                ${renderPrintableReport(emp)}
+    // 5. REPORT (AKUNTABILITAS)
+    function renderReport(el) {
+      const emp = state.employees[state.selectedEmpId];
+      const kpiOk = emp.kpis.filter(k=>k.status===true).length;
+      const kpiScore = Math.round((kpiOk/emp.kpis.length)*100) || 0;
+
+      el.innerHTML = `
+        <div class="flex flex-col lg:flex-row gap-6 no-print">
+          <!-- Sidebar Control -->
+          <div class="lg:w-1/4 space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Pilih Karyawan</label>
+              <select onchange="changeEmp(this.value)" class="w-full border-slate-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                ${Object.values(state.employees).map(e => `<option value="${e.id}" ${e.id===state.selectedEmpId?'selected':''}>${e.name}</option>`).join('')}
+              </select>
             </div>
-        `;
-    }
-    
-    // --- RENDER SUB-COMPONENTS ---
-    
-    function renderCompetencyBar(comp, empId, index) {
-        const width = (comp.current / comp.target) * 100;
-        return `
-            <div class="mb-3 p-3 border rounded-lg">
-                <div class="flex justify-between items-center text-sm mb-2">
-                    <span class="font-medium text-gray-700">${comp.name}</span>
-                    <div class="flex items-center gap-2">
-                        <span class="text-gray-500 font-bold">${comp.current}/${comp.target}</span>
-                        <button class="edit-competency-btn text-gray-400 hover:text-indigo-600" title="Edit" data-emp-id="${empId}" data-index="${index}">${ICONS.pencil}</button>
-                        <button class="delete-competency-btn text-gray-400 hover:text-red-600" title="Hapus" data-emp-id="${empId}" data-index="${index}">${ICONS.trash}</button>
-                    </div>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full transition-all duration-500" style="width: ${width}%"></div>
-                </div>
-                <input type="range" min="0" max="${comp.target}" value="${comp.current}" step="1" class="competency-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" data-emp-id="${empId}" data-index="${index}">
-            </div>`;
-    }
-
-    function renderKpiItem(kpi, empId, index) {
-        const status = kpi.status;
-        const icon = status === true ? ICONS.checkCircle : (status === false ? ICONS.xCircle : ICONS.alertTriangle);
-        const iconColor = status === true ? 'text-green-500' : (status === false ? 'text-red-500' : 'text-gray-400');
-        
-        return `
-            <div class="flex items-start gap-3 p-3 rounded-lg border">
-                <div class="mt-1 ${iconColor}">${icon}</div>
-                <div class="flex-1">
-                    <h4 class="font-medium text-gray-900">${kpi.name}</h4>
-                    <p class="text-sm text-gray-600 mt-1">Target: ${kpi.target}</p>
-                </div>
-                <div class="flex gap-1">
-                    <button class="assess-kpi-btn p-1 rounded ${status === true ? 'bg-green-100 text-green-700' : 'hover:bg-green-50'}" title="Achieved" data-emp-id="${empId}" data-index="${index}" data-status="true">
-                        ${ICONS.checkCircleSm}
-                    </button>
-                    <button class="assess-kpi-btn p-1 rounded ${status === false ? 'bg-red-100 text-red-700' : 'hover:bg-red-50'}" title="Not achieved" data-emp-id="${empId}" data-index="${index}" data-status="false">
-                        ${ICONS.xCircleSm}
-                    </button>
-                    <button class="edit-kpi-btn p-1 rounded hover:bg-indigo-50" title="Edit" data-emp-id="${empId}" data-index="${index}">
-                        <span class="text-gray-500">${ICONS.pencil}</span>
-                    </button>
-                    <button class="delete-kpi-btn p-1 rounded hover:bg-red-50" title="Hapus" data-emp-id="${empId}" data-index="${index}">
-                        <span class="text-gray-500">${ICONS.trash}</span>
-                    </button>
-                </div>
-            </div>`;
-    }
-    
-    function renderCareerPathSection(title, items, empId, keyName) {
-        const isExpanded = expandedPaths[empId] && expandedPaths[empId][keyName];
-        const icon = isExpanded ? ICONS.chevronUp : ICONS.chevronDown;
-        const colorClass = keyName === 'short' ? 'bg-blue-100 text-blue-700' : (keyName === 'mid' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700');
-        
-        return `
-            <div class="border rounded-xl overflow-hidden mb-4">
-                <button class="career-toggle-btn w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors" data-emp-id="${empId}" data-key="${keyName}">
-                    <div class="flex items-center gap-2">
-                        <div class="p-2 rounded-lg ${colorClass}">${ICONS.calendar}</div>
-                        <h3 class="font-bold text-gray-800">${title}</h3>
-                    </div>
-                    <span class="text-gray-500">${icon}</span>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 text-center">
+              <h3 class="text-sm font-medium text-slate-600 mb-2">Skor KPI (Job Goals)</h3>
+              <div class="text-4xl font-bold text-indigo-600 mb-1">${kpiScore}%</div>
+              <p class="text-xs text-slate-400">Target: ${emp.kpis.length} Indikator</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Aksi</label>
+              <button onclick="window.print()" class="w-full flex items-center justify-center gap-2 bg-slate-800 text-white px-4 py-2.5 rounded-lg hover:bg-slate-900 transition-colors mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                Cetak PDF (A4)
+              </button>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="approve('manager')" class="text-xs px-3 py-2 rounded border ${emp.approval.manager.date ? 'bg-green-50 text-green-700 border-green-200' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}">
+                  ${emp.approval.manager.date ? 'ACC Manajer' : 'Approve Mgr'}
                 </button>
-                <div class="p-4 bg-white ${isExpanded ? '' : 'hidden'}">
-                    <ul class="space-y-2">
-                        ${items.map(item => `
-                            <li class="flex items-start gap-2">
-                                <span class="text-green-500 mt-0.5 flex-shrink-0">${ICONS.checkCircleSm}</span>
-                                <span class="text-gray-700">${item}</span>
-                            </li>`).join('')}
-                    </ul>
-                </div>
-            </div>`;
-    }
-    
-    function renderReportSummaryView(emp) {
-        const { achieved, total } = getKpiStatusCount(emp.id);
-        const percentage = total > 0 ? Math.round((achieved / total) * 100) : 0;
-        
-        return `
-            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Ringkasan Kinerja (Data Tersinkronisasi)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Ringkasan KPI -->
-                <div>
-                    <h4 class="font-semibold text-gray-700 mb-2 flex items-center gap-2">${ICONS.barChart} Pencapaian KPI</h4>
-                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-                        <h4 class="text-lg font-semibold text-blue-800">Skor KPI</h4>
-                        <p class="text-3xl font-bold text-blue-700">${achieved} <span class="text-xl">/ ${total}</span></p>
-                        <p class="text-lg font-medium text-blue-700">(${percentage}%)</p>
-                    </div>
-                </div>
-                <!-- Ringkasan Kompetensi -->
-                <div>
-                    <h4 class="font-semibold text-gray-700 mb-2 flex items-center gap-2">${ICONS.star} Penilaian Kompetensi</h4>
-                    <ul class="space-y-2">
-                        ${emp.competencies.map(comp => {
-                            const gap = comp.target - comp.current;
-                            return `
-                                <li class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                                    <span class="text-sm font-medium text-gray-700">${comp.name}</span>
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-sm font-bold text-indigo-600">${comp.current} / ${comp.target}</span>
-                                        <span class="text-xs font-bold px-2 py-0.5 rounded-full ${gap > 0 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">
-                                            Gap: ${gap > 0 ? `-${gap}` : gap}
-                                        </span>
-                                    </div>
-                                </li>`;
-                        }).join('')}
-                    </ul>
-                </div>
-            </div>`;
-    }
-    
-    function renderApprovalBox(title, approval, empId, role) {
-        if (approval.approved) {
-            return `
-                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                    <h4 class="font-semibold text-gray-700">${title}</h4>
-                    <div class="mt-2 text-green-600">
-                        <span class="inline-block align-middle">${ICONS.checkCircle}</span>
-                        <span class="font-bold ml-2">Disetujui</span>
-                        <p class="text-sm">${new Date(approval.date).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}</p>
-                    </div>
-                </div>`;
-        } else {
-            return `
-                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                    <h4 class="font-semibold text-gray-700">${title}</h4>
-                    <div class="mt-2 text-gray-500">
-                        <span class="inline-block align-middle">${ICONS.alertTriangle}</span>
-                        <span class="font-bold ml-2">Menunggu Persetujuan</span>
-                        <button class="approve-btn mt-3 w-full bg-blue-500 text-white p-2 rounded-lg font-medium hover:bg-blue-600 transition-colors" data-emp-id="${empId}" data-role="${role}">
-                            Setujui sebagai ${title}
-                        </button>
-                    </div>
-                </div>`;
-        }
-    }
-    
-    function renderPrintableReport(emp) {
-        const { achieved, total } = getKpiStatusCount(emp.id);
-        const percentage = total > 0 ? Math.round((achieved / total) * 100) : 0;
-        
-        const kpiStatus = (status) => {
-            if (status === true) return '<span class="font-bold text-green-600">Tercapai</span>';
-            if (status === false) return '<span class="font-bold text-red-600">Tidak Tercapai</span>';
-            return '<span class="text-gray-500">Belum Dinilai</span>';
-        };
-        
-        const approvalSignature = (title, approval) => `
-            <div class="w-1/2 px-4">
-                <p class="text-sm text-gray-700 mb-2">Disetujui oleh,</p>
-                ${approval.approved ? `
-                    <div class="text-sm text-green-600 mb-2 min-h-[40px]">
-                        <p class="font-bold">Telah disetujui secara digital pada:</p>
-                        <p>${new Date(approval.date).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}</p>
-                    </div>
-                ` : `
-                    <div class="text-sm text-gray-500 italic mb-2 min-h-[40px] pt-4">
-                        (Belum disetujui)
-                    </div>
-                `}
-                <div class="border-t border-gray-400 pt-2 mt-12">
-                    <p class="font-semibold text-gray-800">(_______________________)</p>
-                    <p class="text-sm font-medium text-gray-600">${title}</p>
-                </div>
-            </div>`;
-        
-        return `
-            <div id="printable-report" class="bg-white p-8 max-w-4xl mx-auto">
-                <header class="text-center mb-10 pb-4 border-b-2 border-gray-800">
-                    <h1 class="text-3xl font-bold text-gray-900">Laporan Penilaian Kinerja Tahunan</h1>
-                    <h2 class="text-xl font-semibold text-gray-700">Koperasi Adaro Karya Mandiri (Kopkar AKM)</h2>
-                </header>
-                <section class="mb-8">
-                    <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Informasi Karyawan</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><span class="text-sm font-medium text-gray-600">Nama Karyawan</span><p class="text-lg font-semibold text-gray-900">${emp.name}</p></div>
-                        <div><span class="text-sm font-medium text-gray-600">Jabatan</span><p class="text-lg font-semibold text-gray-900">${emp.role}</p></div>
-                    </div>
-                </section>
-                <section class="mb-8">
-                    <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Ringkasan Penilaian KPI</h3>
-                    <div class="mb-4 p-4 print-kpi-score rounded-lg text-center">
-                        <h4 class="text-lg font-semibold">Skor Pencapaian KPI</h4>
-                        <p class="text-3xl font-bold">${achieved} <span class="text-xl">/ ${total}</span></p>
-                        <p class="text-lg font-medium">(${percentage}%)</p>
-                    </div>
-                    <table class="w-full border-collapse border border-gray-300">
-                        <thead><tr class="bg-gray-100">
-                            <th class="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Nama KPI</th>
-                            <th class="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Target</th>
-                            <th class="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Status</th>
-                        </tr></thead>
-                        <tbody>${emp.kpis.map(kpi => `
-                            <tr class="even:bg-gray-50">
-                                <td class="border border-gray-300 p-2 text-sm text-gray-800">${kpi.name}</td>
-                                <td class="border border-gray-300 p-2 text-sm text-gray-800">${kpi.target}</td>
-                                <td class="border border-gray-300 p-2 text-sm text-gray-800">${kpiStatus(kpi.status)}</td>
-                            </tr>`).join('')}
-                        </tbody>
-                    </table>
-                </section>
-                <section class="mb-8">
-                    <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Ringkasan Penilaian Kompetensi</h3>
-                    <table class="w-full border-collapse border border-gray-300">
-                        <thead><tr class="bg-gray-100">
-                            <th class="border border-gray-300 p-2 text-left text-sm font-semibold text-gray-700">Nama Kompetensi</th>
-                            <th class="border border-gray-300 p-2 text-center text-sm font-semibold text-gray-700">Skor Saat Ini</th>
-                            <th class="border border-gray-300 p-2 text-center text-sm font-semibold text-gray-700">Target Skor</th>
-                            <th class="border border-gray-300 p-2 text-center text-sm font-semibold text-gray-700">Gap</th>
-                        </tr></thead>
-                        <tbody>${emp.competencies.map(comp => {
-                            const gap = comp.target - comp.current;
-                            return `
-                                <tr class="even:bg-gray-50">
-                                    <td class="border border-gray-300 p-2 text-sm text-gray-800">${comp.name}</td>
-                                    <td class="border border-gray-300 p-2 text-sm text-center font-bold text-indigo-600">${comp.current}</td>
-                                    <td class="border border-gray-300 p-2 text-sm text-center font-bold text-gray-600">${comp.target}</td>
-                                    <td class="border border-gray-300 p-2 text-sm text-center font-bold ${gap > 0 ? 'print-table-gap-bad' : 'print-table-gap-good'}">${gap > 0 ? `-${gap}` : gap}</td>
-                                </tr>`;
-                        }).join('')}
-                        </tbody>
-                    </table>
-                </section>
-                <section class="mb-8">
-                    <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Catatan & Rencana Pengembangan</h3>
-                    <div class="mb-6">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Penjelasan Target Tahunan (Review)</label>
-                        <p class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] text-sm text-gray-800 whitespace-pre-wrap">${emp.annualReview || "(Belum diisi)"}</p>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Potensi Pengembangan Diri</label>
-                        <p class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 min-h-[100px] text-sm text-gray-800 whitespace-pre-wrap">${emp.developmentPotential || "(Belum diisi)"}</p>
-                    </div>
-                </section>
-                <section class="mt-20 pt-10">
-                    <div class="flex justify-between text-left">
-                        ${approvalSignature('Manajer Koperasi', emp.approval.manager)}
-                        ${approvalSignature('Ketua Koperasi', emp.approval.head)}
-                    </div>
-                </section>
-            </div>`;
+                <button onclick="approve('head')" class="text-xs px-3 py-2 rounded border ${emp.approval.head.date ? 'bg-green-50 text-green-700 border-green-200' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}">
+                  ${emp.approval.head.date ? 'ACC Ketua' : 'Approve Ketua'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Form -->
+          <div class="lg:w-3/4 bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-xl font-bold text-slate-900 mb-6 pb-4 border-b border-slate-100">Input Evaluasi Tahunan</h2>
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Ulasan Pencapaian Target (Kualitatif)</label>
+                <p class="text-xs text-slate-500 mb-2">Jelaskan kendala atau keberhasilan berdasarkan Job Goals & SOP.</p>
+                <textarea oninput="updateText('review', this.value)" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" rows="4">${emp.review}</textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Potensi Pengembangan Diri</label>
+                <p class="text-xs text-slate-500 mb-2">Rekomendasi pelatihan berdasarkan Gap Kompetensi.</p>
+                <textarea oninput="updateText('potential', this.value)" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" rows="4">${emp.potential}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRINT TEMPLATE (HIDDEN) -->
+        ${renderPrintTemplate(emp, kpiOk, kpiScore)}
+      `;
     }
 
-    // --- MODAL LOGIC ---
-    function openModalHandler(type, empId, index = null) {
-        modal.isOpen = true;
-        modal.type = type;
-        modal.empId = empId;
-        
-        const modalTitleEl = document.getElementById('modal-title');
-        const modalFormEl = document.getElementById('modal-form');
-        let initialData = {};
-        
-        if (type === 'ADD_KPI') {
-            modalTitleEl.textContent = 'Tambah KPI Baru';
-            modalFormEl.innerHTML = `
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama KPI</label>
-                    <input type="text" name="name" class="w-full p-2 border border-gray-300 rounded-lg" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Target</label>
-                    <input type="text" name="target" class="w-full p-2 border border-gray-300 rounded-lg" required>
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-lg font-medium hover:bg-indigo-700">Simpan</button>`;
-        } else if (type === 'EDIT_KPI') {
-            initialData = state.employees[empId].kpis[index];
-            modal.data = { ...initialData, index };
-            modalTitleEl.textContent = 'Edit KPI';
-            modalFormEl.innerHTML = `
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama KPI</label>
-                    <input type="text" name="name" class="w-full p-2 border border-gray-300 rounded-lg" value="${initialData.name}" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Target</label>
-                    <input type="text" name="target" class="w-full p-2 border border-gray-300 rounded-lg" value="${initialData.target}" required>
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-lg font-medium hover:bg-indigo-700">Simpan</button>`;
-        } else if (type === 'ADD_COMPETENCY') {
-            modalTitleEl.textContent = 'Tambah Kompetensi Baru';
-            modalFormEl.innerHTML = `
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kompetensi</label>
-                    <input type="text" name="name" class="w-full p-2 border border-gray-300 rounded-lg" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Target Level (1-5)</label>
-                    <input type="number" name="target" class="w-full p-2 border border-gray-300 rounded-lg" value="5" min="1" max="5" required>
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-lg font-medium hover:bg-indigo-700">Simpan</button>`;
-        } else if (type === 'EDIT_COMPETENCY') {
-            initialData = state.employees[empId].competencies[index];
-            modal.data = { ...initialData, index };
-            modalTitleEl.textContent = 'Edit Kompetensi';
-            modalFormEl.innerHTML = `
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kompetensi</label>
-                    <input type="text" name="name" class="w-full p-2 border border-gray-300 rounded-lg" value="${initialData.name}" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Target Level (1-5)</label>
-                    <input type="number" name="target" class="w-full p-2 border border-gray-300 rounded-lg" value="${initialData.target}" min="1" max="5" required>
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-lg font-medium hover:bg-indigo-700">Simpan</button>`;
-        }
-        
-        document.getElementById('modal-backdrop').classList.remove('hidden');
+    function renderPrintTemplate(emp, kpiOk, kpiScore) {
+      const date = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
+      return `
+      <div id="print-container" class="print-only bg-white">
+        <div class="text-center border-b-2 border-black pb-4 mb-6">
+          <h1 class="uppercase font-bold text-2xl tracking-wide">KOPERASI KARYAWAN ADARO KARYA MANDIRI</h1>
+          <h2 class="text-lg">LAPORAN AKUNTABILITAS KINERJA TAHUNAN</h2>
+          <p class="text-sm">Tahun Buku: ${new Date().getFullYear()}</p>
+        </div>
+
+        <table class="w-full mb-6">
+          <tr><td class="w-32 font-bold">Nama</td><td>: ${emp.name}</td><td class="w-32 font-bold">Periode</td><td>: Jan - Des ${new Date().getFullYear()}</td></tr>
+          <tr><td class="font-bold">Jabatan</td><td>: ${emp.role}</td><td class="font-bold">ID Karyawan</td><td>: ${emp.id.toUpperCase()}</td></tr>
+        </table>
+
+        <div class="mb-6">
+          <h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">I. PENCAPAIAN KPI (JOB GOALS 2025)</h3>
+          <div class="mb-2 font-bold text-sm">Skor Capaian: ${kpiScore}% (${kpiOk} dari ${emp.kpis.length} Target)</div>
+          <table class="w-full text-sm border-collapse border border-black">
+            <tr class="bg-gray-100"><th class="border border-black p-2 text-left w-1/3">Indikator Kinerja Utama</th><th class="border border-black p-2 text-left w-1/4">Target</th><th class="border border-black p-2 text-center w-1/6">Status</th><th class="border border-black p-2 text-left w-1/4">Keterangan / Kendala</th></tr>
+            ${emp.kpis.map(k => `<tr><td class="border border-black p-2">${k.name}</td><td class="border border-black p-2">${k.target}</td><td class="border border-black p-2 text-center font-bold">${k.status===true?'TERCAPAI':(k.status===false?'TDK TERCAPAI':'-')}</td><td class="border border-black p-2 italic text-xs">${k.status===false ? (k.reason || '-') : '-'}</td></tr>`).join('')}
+          </table>
+        </div>
+
+        <div class="mb-6">
+          <h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">II. EVALUASI KOMPETENSI (BERBASIS SOP)</h3>
+          <table class="w-full text-sm border-collapse border border-black">
+            <tr class="bg-gray-100"><th class="border border-black p-2 text-left">Kompetensi & Referensi SOP</th><th class="border border-black p-2 text-center w-16">Target</th><th class="border border-black p-2 text-center w-16">Aktual</th><th class="border border-black p-2 text-center w-20">Gap</th></tr>
+            ${emp.competencies.map(c => {
+              const gap = c.target - c.current;
+              return `<tr><td class="border border-black p-2"><b>${c.name}</b><br><span class="text-xs italic">Ref: ${c.ref}</span></td><td class="border border-black p-2 text-center">${c.target}</td><td class="border border-black p-2 text-center">${c.current}</td><td class="border border-black p-2 text-center">${gap>0?`-${gap}`:'OK'}</td></tr>`;
+            }).join('')}
+          </table>
+        </div>
+
+        <div class="mb-8">
+          <h3 class="font-bold uppercase text-sm border-b border-black mb-2 pb-1">III. ULASAN & RENCANA PENGEMBANGAN</h3>
+          <div class="border border-black p-3 mb-2 min-h-[80px]">
+            <b class="text-xs block mb-1">ULASAN MANAJEMEN:</b>
+            <p class="text-sm whitespace-pre-wrap">${emp.review || '-'}</p>
+          </div>
+          <div class="border border-black p-3 min-h-[80px]">
+            <b class="text-xs block mb-1">RENCANA PENGEMBANGAN:</b>
+            <p class="text-sm whitespace-pre-wrap">${emp.potential || '-'}</p>
+          </div>
+        </div>
+
+        <div class="flex justify-between mt-12 px-8 page-break-inside-avoid">
+          <div class="text-center w-1/3">
+            <p class="mb-16">Dibuat & Disetujui Oleh<br>Manajer Koperasi</p>
+            ${emp.approval.manager.date ? `<div class="text-xs border border-green-600 text-green-700 font-bold p-1 mb-1">DIGITALLY SIGNED<br>${new Date(emp.approval.manager.date).toLocaleDateString('id-ID')}</div>` : ''}
+            <p class="font-bold underline">( ................................. )</p>
+          </div>
+          <div class="text-center w-1/3">
+            <p class="mb-16">Mengetahui<br>Ketua Pengurus</p>
+            ${emp.approval.head.date ? `<div class="text-xs border border-green-600 text-green-700 font-bold p-1 mb-1">DIGITALLY SIGNED<br>${new Date(emp.approval.head.date).toLocaleDateString('id-ID')}</div>` : ''}
+            <p class="font-bold underline">( ................................. )</p>
+          </div>
+        </div>
+        <p class="text-center text-xs mt-8 italic">Dokumen ini dicetak melalui Sistem Manajemen Kinerja Kopkar AKM pada ${date}</p>
+      </div>
+      `;
     }
 
-    function closeModalHandler() {
-        modal.isOpen = false;
-        document.getElementById('modal-backdrop').classList.add('hidden');
-    }
-
-    // --- EVENT HANDLERS (DISPATCHERS) ---
-    
-    function handleFormSubmit(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData.entries());
-        const { type, empId, data: modalData } = modal;
-
-        if (type === 'ADD_KPI') {
-            state.employees[empId].kpis.push({ name: data.name, target: data.target, status: null });
-            renderKpiView();
-        } else if (type === 'EDIT_KPI') {
-            const kpi = state.employees[empId].kpis[modalData.index];
-            kpi.name = data.name;
-            kpi.target = data.target;
-            renderKpiView();
-        } else if (type === 'ADD_COMPETENCY') {
-            state.employees[empId].competencies.push({ name: data.name, target: parseInt(data.target, 10), current: 0 });
-            renderCompetencyView();
-        } else if (type === 'EDIT_COMPETENCY') {
-            const comp = state.employees[empId].competencies[modalData.index];
-            comp.name = data.name;
-            comp.target = parseInt(data.target, 10);
-            renderCompetencyView();
-        }
-        
-        closeModalHandler();
+    // --- LOGIC & ACTIONS ---
+    function setTab(id, empId) {
+      state.activeTab = id;
+      if(empId) state.selectedEmpId = empId;
+      saveState();
     }
     
-    // --- EVENT LISTENERS ---
-    
+    function changeEmp(id) {
+      state.selectedEmpId = id;
+      renderApp();
+    }
+
+    function updateScore(empId, type, idx, val) {
+      state.employees[empId][type][idx].current = parseInt(val);
+      saveState();
+    }
+
+    function updateKpiStatus(empId, idx, status) {
+      if (status === false) {
+        // We need a small timeout to allow UI to update before prompt blocks
+        setTimeout(() => {
+          const reason = prompt("Masukkan alasan/kendala mengapa target ini tidak tercapai:");
+          if (reason !== null) {
+             state.employees[empId].kpis[idx].reason = reason;
+             state.employees[empId].kpis[idx].status = status;
+             saveState();
+          }
+        }, 50);
+      } else {
+        state.employees[empId].kpis[idx].reason = ""; 
+        state.employees[empId].kpis[idx].status = status;
+        saveState();
+      }
+    }
+
+    function updateText(field, val) {
+      state.employees[state.selectedEmpId][field] = val;
+      saveState();
+    }
+
+    function approve(role) {
+      if(confirm('Setujui dokumen ini secara digital?')) {
+        state.employees[state.selectedEmpId].approval[role].date = new Date().toISOString();
+        saveState();
+      }
+    }
+
+    function deleteItem(type, empId, idx) {
+      if(confirm('Hapus item ini?')) {
+        state.employees[empId][type].splice(idx, 1);
+        saveState();
+      }
+    }
+
+    // MODAL LOGIC
+    function openModal(type, empId) {
+      state.isModalOpen = true;
+      state.modalConfig = { type, empId };
+      const backdrop = document.getElementById('modal-backdrop');
+      const title = document.getElementById('modal-title');
+      const body = document.getElementById('modal-body');
+      
+      backdrop.classList.remove('hidden');
+      setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+
+      if(type === 'ADD_KPI') {
+        title.innerText = 'Tambah KPI Baru';
+        body.innerHTML = `
+          <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">Nama KPI</label><input id="m-input-1" class="w-full border p-2 rounded"></div>
+            <div><label class="block text-sm font-medium mb-1">Target (Sesuai Job Goal/Renstra)</label><input id="m-input-2" class="w-full border p-2 rounded"></div>
+            <button onclick="submitModal()" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Simpan</button>
+          </div>`;
+      } else if(type === 'ADD_COMP') {
+        title.innerText = 'Tambah Kompetensi';
+        body.innerHTML = `
+          <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">Nama Kompetensi</label><input id="m-input-1" class="w-full border p-2 rounded"></div>
+            <div><label class="block text-sm font-medium mb-1">Referensi Dokumen (SOP/Portofolio)</label><input id="m-input-ref" class="w-full border p-2 rounded" placeholder="Contoh: SOP/ADM/01"></div>
+            <div><label class="block text-sm font-medium mb-1">Target Level (1-5)</label><input type="number" id="m-input-2" value="5" max="5" class="w-full border p-2 rounded"></div>
+            <button onclick="submitModal()" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Simpan</button>
+          </div>`;
+      } else if(type === 'GUIDE') {
+        title.innerText = 'Panduan Penilaian Kompetensi (SOP)';
+        body.innerHTML = `
+          <div class="space-y-4 text-sm text-slate-600">
+            <p class="font-bold text-slate-800">Level 1 - Pemula:</p>
+            <p>Belum memahami SOP secara menyeluruh. Membutuhkan bimbingan penuh dalam pelaksanaan tugas sesuai prosedur.</p>
+            
+            <p class="font-bold text-slate-800">Level 2 - Dasar:</p>
+            <p>Memahami SOP dasar. Mampu melaksanakan tugas rutin sesuai SOP dengan sedikit bimbingan.</p>
+            
+            <p class="font-bold text-slate-800">Level 3 - Menengah (Target Minimal Staf):</p>
+            <p>Menguasai SOP teknis di bidangnya. Mampu bekerja mandiri sesuai standar tanpa pengawasan ketat.</p>
+            
+            <p class="font-bold text-slate-800">Level 4 - Mahir (Target Kepala Unit):</p>
+            <p>Sangat menguasai SOP dan mampu memecahkan masalah operasional (troubleshooting). Mampu membimbing orang lain.</p>
+            
+            <p class="font-bold text-slate-800">Level 5 - Ahli (Target Manajer):</p>
+            <p>Mampu mengevaluasi dan mengembangkan/merevisi SOP. Menjadi rujukan utama dalam kepatuhan dan standar kerja.</p>
+          </div>
+          <div class="mt-6 text-right">
+            <button onclick="closeModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded hover:bg-slate-300">Tutup</button>
+          </div>`;
+      }
+    }
+
+    function closeModal() {
+      const backdrop = document.getElementById('modal-backdrop');
+      backdrop.classList.add('opacity-0');
+      setTimeout(() => { backdrop.classList.add('hidden'); state.isModalOpen = false; }, 300);
+    }
+
+    function submitModal() {
+      if(state.modalConfig.type === 'GUIDE') return; // No submit for guide
+
+      const v1 = document.getElementById('m-input-1').value;
+      const v2 = document.getElementById('m-input-2').value;
+      const vRef = document.getElementById('m-input-ref') ? document.getElementById('m-input-ref').value : '';
+      const { type, empId } = state.modalConfig;
+
+      if(type === 'ADD_KPI') {
+        state.employees[empId].kpis.push({ name: v1, target: v2, status: null, reason: '' });
+      } else {
+        state.employees[empId].competencies.push({ name: v1, ref: vRef, target: parseInt(v2), current: 0 });
+      }
+      closeModal();
+      saveState();
+    }
+
+    // Init
     document.addEventListener('DOMContentLoaded', () => {
-        renderApp(); // Initial render
-
-        // Tab Navigation
-        document.getElementById('nav-tabs').addEventListener('click', (e) => {
-            const button = e.target.closest('.tab-button');
-            if (button) {
-                activeTab = button.dataset.tab;
-                renderApp();
-            }
-        });
-
-        // Dashboard: Select Employee
-        document.getElementById('dashboard-profile-cards').addEventListener('click', (e) => {
-            const card = e.target.closest('.profile-card');
-            if (card) {
-                selectedEmployeeId = card.dataset.empId;
-                renderDashboardView(); // Only re-render dashboard for active state
-            }
-        });
-        
-        // Universal Click Handler for dynamic content
-        document.querySelector('main').addEventListener('click', (e) => {
-            const target = e.target;
-            
-            // Toggle Career Path
-            const careerToggle = target.closest('.career-toggle-btn');
-            if (careerToggle) {
-                const { empId, key } = careerToggle.dataset;
-                if (!expandedPaths[empId]) expandedPaths[empId] = {};
-                expandedPaths[empId][key] = !expandedPaths[empId][key];
-                renderCareerView();
-            }
-            
-            // --- KPI Buttons ---
-            const assessKpiBtn = target.closest('.assess-kpi-btn');
-            if (assessKpiBtn) {
-                const { empId, index, status } = assessKpiBtn.dataset;
-                state.employees[empId].kpis[index].status = (status === 'true');
-                renderKpiView();
-            }
-            const addKpiBtn = target.closest('.add-kpi-btn');
-            if (addKpiBtn) {
-                openModalHandler('ADD_KPI', addKpiBtn.dataset.empId);
-            }
-            const editKpiBtn = target.closest('.edit-kpi-btn');
-            if (editKpiBtn) {
-                const { empId, index } = editKpiBtn.dataset;
-                openModalHandler('EDIT_KPI', empId, index);
-            }
-            const deleteKpiBtn = target.closest('.delete-kpi-btn');
-            if (deleteKpiBtn) {
-                if (window.confirm('Anda yakin ingin menghapus KPI ini?')) {
-                    const { empId, index } = deleteKpiBtn.dataset;
-                    state.employees[empId].kpis.splice(index, 1);
-                    renderKpiView();
-                }
-            }
-
-            // --- Competency Buttons ---
-            const addCompetencyBtn = target.closest('.add-competency-btn');
-            if (addCompetencyBtn) {
-                openModalHandler('ADD_COMPETENCY', addCompetencyBtn.dataset.empId);
-            }
-            const editCompetencyBtn = target.closest('.edit-competency-btn');
-            if (editCompetencyBtn) {
-                const { empId, index } = editCompetencyBtn.dataset;
-                openModalHandler('EDIT_COMPETENCY', empId, index);
-            }
-            const deleteCompetencyBtn = target.closest('.delete-competency-btn');
-            if (deleteCompetencyBtn) {
-                if (window.confirm('Anda yakin ingin menghapus kompetensi ini?')) {
-                    const { empId, index } = deleteCompetencyBtn.dataset;
-                    state.employees[empId].competencies.splice(index, 1);
-                    renderCompetencyView();
-                }
-            }
-            
-            // --- Report Buttons ---
-            const approveBtn = target.closest('.approve-btn');
-            if (approveBtn) {
-                const { empId, role } = approveBtn.dataset;
-                state.employees[empId].approval[role] = { approved: true, date: new Date().toISOString() };
-                renderReportView();
-            }
-        });
-        
-        // --- Universal Input Handler (Sliders, Textareas) ---
-        document.querySelector('main').addEventListener('input', (e) => {
-            const target = e.target;
-            
-            // Competency Slider
-            if (target.classList.contains('competency-slider')) {
-                const { empId, index } = target.dataset;
-                state.employees[empId].competencies[index].current = parseInt(target.value, 10);
-                // Re-render only the parent component, not the whole view
-                const list = document.getElementById(`competency-list-${empId}`);
-                list.innerHTML = state.employees[empId].competencies.map((comp, idx) => renderCompetencyBar(comp, empId, idx)).join('');
-            }
-            
-            // Report Textareas
-            if (target.id === 'report-annual-review') {
-                state.employees[target.dataset.empId].annualReview = target.value;
-            }
-            if (target.id === 'report-development-potential') {
-                state.employees[target.dataset.empId].developmentPotential = target.value;
-            }
-            
-            // Report Select
-            if (target.id === 'report-employee-select') {
-                selectedEmployeeId = target.value;
-                renderReportView();
-            }
-        });
-        
-        // --- Modal Handlers ---
-        document.getElementById('modal-close-button').addEventListener('click', closeModalHandler);
-        document.getElementById('modal-backdrop').addEventListener('click', (e) => {
-            if (e.target.id === 'modal-backdrop') closeModalHandler();
-        });
-        document.getElementById('modal-form').addEventListener('submit', handleFormSubmit);
-        
-        // --- Print Handler ---
-        document.getElementById('print-button').addEventListener('click', () => {
-            // Render a fresh copy of the printable report before printing
-            const reportContainer = document.querySelector('.print\\:block');
-            reportContainer.innerHTML = renderPrintableReport(state.employees[selectedEmployeeId]);
-            window.print();
-        });
+        // Perbaikan: Memastikan elemen "current-date" ada sebelum mengakses propertinya.
+        const dateElement = document.getElementById('current-date');
+        if (dateElement) {
+            dateElement.innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        renderApp();
     });
-
   </script>
 </body>
 </html>
