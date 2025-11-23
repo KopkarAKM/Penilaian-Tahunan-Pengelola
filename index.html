@@ -23,6 +23,11 @@
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #4f46e5; cursor: pointer; margin-top: -10px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #d1d5db; border-radius: 3px; }
     
+    /* Career Path Styles */
+    .timeline-item { position: relative; padding-left: 24px; padding-bottom: 24px; border-left: 2px solid #e5e7eb; }
+    .timeline-item:last-child { border-left: 2px solid transparent; }
+    .timeline-dot { position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid #4f46e5; }
+    
     @media print {
       @page { size: A4; margin: 10mm; }
       body { background-color: white; padding-bottom: 0; }
@@ -95,7 +100,7 @@
   <div id="print-container" class="print-only"></div>
 
   <script>
-    // --- DATA SUMBER (INCLUDING GAP ANALYSIS) ---
+    // --- DATA SUMBER (STRUCTURED KPI: GLOBAL & DETAIL) ---
     const initialEmployees = {
       'mahmudah': {
         id: 'mahmudah', name: 'Mahmudah Hayati, S.H.', role: 'Manager / Kabag Adm & Keuangan', photo: 'https://ui-avatars.com/api/?name=MH&background=e0e7ff&color=4f46e5',
@@ -103,7 +108,9 @@
         kpis: [
             { type: 'global', name: 'Total Pendapatan Koperasi', target: 'Rp 2,574 Miliar', status: null, reason: '', evidence: null },
             { type: 'global', name: 'Efisiensi Keuangan', target: 'Rp 185 Juta', status: null, reason: '', evidence: null },
+            { type: 'global', name: 'Kepuasan Anggota', target: 'Min 90%', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Laporan Keuangan Bulanan', target: 'Tgl 10 Setiap Bulan', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Monitoring Anggaran', target: 'Evaluasi Mingguan', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Audit Internal', target: '1x per Semester', status: null, reason: '', evidence: null }
         ],
         gaps: [
@@ -118,7 +125,8 @@
         kpis: [
             { type: 'global', name: 'Efisiensi Biaya Operasional', target: 'Hemat Rp 155 Juta', status: null, reason: '', evidence: null },
             { type: 'global', name: 'Zero Accident', target: '0 Kasus Kecelakaan', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Kontrol Biaya BBM & Perbaikan', target: 'Sesuai Budget', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Kontrol Biaya BBM', target: 'Max Rp 19,2 Jt', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Kontrol Perbaikan Unit', target: 'Max Rp 9,5 Jt', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Inspeksi K3 Rutin', target: '1x per Minggu', status: null, reason: '', evidence: null }
         ],
         gaps: [
@@ -148,7 +156,8 @@
         kpis: [
             { type: 'global', name: 'Laporan Keuangan Tepat Waktu', target: 'Tanggal 10', status: null, reason: '', evidence: null },
             { type: 'global', name: 'Selisih Kas (Cash Opname)', target: 'Nihil', status: null, reason: '', evidence: null },
-            { type: 'detail', name: 'Kontrol Biaya ATK & Internet', target: 'Sesuai Budget', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Kontrol Biaya ATK', target: 'Max Rp 3 Juta', status: null, reason: '', evidence: null },
+            { type: 'detail', name: 'Kontrol Biaya Internet', target: 'Max Rp 7,2 Juta', status: null, reason: '', evidence: null },
             { type: 'detail', name: 'Input Jurnal Harian', target: 'H+1 Transaksi', status: null, reason: '', evidence: null }
         ],
         gaps: [
@@ -176,7 +185,7 @@
 
     // --- STATE ---
     let state = {
-      employees: JSON.parse(localStorage.getItem('kopkarMobileVFinal5')) || initialEmployees,
+      employees: JSON.parse(localStorage.getItem('kopkarMobileVFinal6')) || initialEmployees,
       activeTab: 'dashboard',
       selectedEmpId: 'mahmudah',
       modalConfig: null,
@@ -184,7 +193,7 @@
     };
 
     const saveState = () => {
-      localStorage.setItem('kopkarMobileVFinal5', JSON.stringify(state.employees));
+      localStorage.setItem('kopkarMobileVFinal6', JSON.stringify(state.employees));
     };
 
     // --- MANIFEST PWA ---
@@ -202,6 +211,7 @@
         { id: 'dashboard', label: 'Home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
         { id: 'competency', label: 'Skill', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
         { id: 'kpi', label: 'KPI', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+        { id: 'career', label: 'Career Path', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
         { id: 'report', label: 'Laporan', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' }
       ];
       
@@ -226,6 +236,7 @@
       if (state.activeTab === 'dashboard') renderDashboard(content);
       else if (state.activeTab === 'competency') renderCompetency(content);
       else if (state.activeTab === 'kpi') renderKPI(content);
+      else if (state.activeTab === 'career') renderCareer(content);
       else if (state.activeTab === 'report') renderReport(content);
     }
 
@@ -274,21 +285,79 @@
              <h2 class="text-lg font-bold text-slate-800">Target KPI 2025</h2>
              <button onclick="openModal('ADD_KPI')" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-indigo-100">+ Tambah</button>
           </div>
-          <div><h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-3 pl-1">Target Utama (Global)</h3><div class="space-y-4">${globalKpis.map((k, i) => { const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type); return renderKpiCard(k, originalIdx); }).join('')}</div></div>
-          <div><h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 pl-1">Aktivitas Kunci (Detail)</h3><div class="space-y-4">${detailKpis.map((k, i) => { const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type); return renderKpiCard(k, originalIdx); }).join('')}</div></div>
+
+          <!-- Global KPIs -->
+          <div>
+             <h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-3 pl-1">Target Utama (Global)</h3>
+             <div class="space-y-4">
+                ${globalKpis.map((k, i) => {
+                    // Find original index
+                    const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type);
+                    return renderKpiCard(k, originalIdx);
+                }).join('')}
+             </div>
+          </div>
+
+          <!-- Detail KPIs -->
+          <div>
+             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 pl-1">Aktivitas Kunci (Detail)</h3>
+             <div class="space-y-4">
+                ${detailKpis.map((k, i) => {
+                    const originalIdx = e.kpis.findIndex(item => item.name === k.name && item.type === k.type);
+                    return renderKpiCard(k, originalIdx);
+                }).join('')}
+             </div>
+          </div>
         </div>
       `;
     }
 
+    // --- 3. COMPETENCY (SLIDER UI) ---
     function renderCompetency(el) {
       const e = state.employees[state.selectedEmpId];
       el.innerHTML = `<div class="space-y-4 pb-20"><div class="flex justify-between items-center px-1"><h2 class="text-lg font-bold text-slate-800">Kompetensi (SOP)</h2><button onclick="openModal('ADD_COMP')" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-indigo-100">+ Tambah</button></div>${e.competencies.map((c, idx) => `<div class="bg-white p-5 rounded-xl card-shadow"><div class="flex justify-between items-start mb-4"><div><h4 class="font-bold text-slate-800 text-sm">${c.name}</h4><p class="text-xs text-slate-400 mt-0.5">Ref: ${c.ref || '-'}</p></div><span class="text-xl font-bold text-indigo-600">${c.current}<span class="text-sm text-gray-300 font-normal">/5</span></span></div><div class="relative pt-2 pb-1"><input type="range" min="1" max="5" value="${c.current}" oninput="updateScore('${e.id}', 'competencies', ${idx}, this.value)" class="w-full accent-indigo-600"><div class="flex justify-between text-[10px] text-gray-400 font-medium mt-1 uppercase tracking-wide"><span>Pemula</span><span>Mahir</span><span>Ahli</span></div></div></div>`).join('')}</div>`;
     }
 
+    // --- 4. CAREER PATH RENDERER ---
+    function renderCareer(el) {
+      const e = state.employees[state.selectedEmpId];
+      el.innerHTML = `
+        <div class="pb-20 space-y-6">
+            <h2 class="text-lg font-bold text-slate-800 px-1">Rencana Karir (Career Path)</h2>
+            
+            <div class="bg-white p-6 rounded-xl card-shadow">
+                <div class="border-l-2 border-slate-200 pl-6 space-y-8">
+                    <div class="timeline-item">
+                        <div class="timeline-dot bg-blue-500 border-white ring-4 ring-blue-50"></div>
+                        <h3 class="text-sm font-bold text-blue-600 uppercase mb-2">Jangka Pendek (1-2 Th)</h3>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                            ${e.careerPath.short.map(i => `<li>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot bg-amber-500 border-white ring-4 ring-amber-50"></div>
+                        <h3 class="text-sm font-bold text-amber-600 uppercase mb-2">Jangka Menengah (3-5 Th)</h3>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                            ${e.careerPath.mid.map(i => `<li>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot bg-emerald-500 border-white ring-4 ring-emerald-50"></div>
+                        <h3 class="text-sm font-bold text-emerald-600 uppercase mb-2">Jangka Panjang (5+ Th)</h3>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                            ${e.careerPath.long.map(i => `<li>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+      `;
+    }
+
     function renderReport(el) {
       const e = state.employees[state.selectedEmpId];
       const isApproved = e.approval.manager.date && e.approval.head.date;
-      // Render report layout
+
       el.innerHTML = `
         <div class="pb-20 space-y-6">
            <div class="bg-white p-6 rounded-xl card-shadow text-center border border-slate-100">
@@ -297,7 +366,11 @@
               </div>
               <h2 class="text-lg font-bold text-slate-800 mb-1">Laporan Akhir Tahun</h2>
               <p class="text-xs text-slate-500 mb-6">Status Dokumen: ${isApproved ? '<span class="text-green-600 font-bold bg-green-50 px-2 py-1 rounded">DISETUJUI</span>' : '<span class="text-amber-500 font-bold bg-amber-50 px-2 py-1 rounded">DRAFT</span>'}</p>
-              <button onclick="window.print()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-200 active:scale-95 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Cetak PDF (A4)</button>
+              
+              <button onclick="window.print()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-200 active:scale-95 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                Cetak PDF (A4)
+              </button>
            </div>
            
            <!-- Gap Analysis Section (New) -->
@@ -499,6 +572,7 @@
         closeModal(); saveState(); renderApp();
     }
 
+    // --- PRINT TEMPLATE ---
     function renderPrintTemplate(emp) {
       const kpiOk = emp.kpis.filter(k=>k.status===true).length;
       const kpiScore = emp.kpis.length > 0 ? Math.round((kpiOk/emp.kpis.length)*100) : 0;
